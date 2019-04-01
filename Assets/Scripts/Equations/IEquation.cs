@@ -2,7 +2,9 @@
 {
     public abstract class IEquation
     {
+        public float freq = 60;
         public abstract UnityEngine.Vector3 GetPosition(int frame);
+        public abstract float GetEnergy();
 
         public float GetDerivative(int frame)
         {
