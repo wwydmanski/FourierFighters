@@ -579,8 +579,9 @@ GameObject:
   - component: {fileID: 497662015}
   - component: {fileID: 497662014}
   - component: {fileID: 497662013}
+  - component: {fileID: 497662017}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: SignalCaster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -658,6 +659,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &497662017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 497662012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7dc3c3c03f73b74aafd8be69ffb1e7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Projectile: {fileID: 328429801356115335, guid: abe40dd5ccfc4ef40ac55f8c31bad0f8,
+    type: 3}
 --- !u!1 &553046308
 GameObject:
   m_ObjectHideFlags: 0

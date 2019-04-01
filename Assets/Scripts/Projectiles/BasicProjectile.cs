@@ -3,33 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assets.Scripts.Equations;
 using UnityEngine;
 
 class BasicProjectile : MonoBehaviour
 {
-    private Transform _transform;
-    private int _frame = 0;
-    private Vector3 _origin;
-    private float amplitude = 1.0f;
-    private float freq = 20;
-    private float speed = 0.2f;
+    public IEquation equation;
 
-    private float freqReduction = 80;
+    private Transform _transform;
+    private int _frame;
+    private Vector3 _origin;
+
 
     void Start()
     {
         _transform = GetComponent<Transform>();
         _origin = transform.position;
+
+        equation = new SinusEquation();
     }
 
     void Update()
     {
-        float x = (float) (_frame*speed);
-        float y = (float) (amplitude*Math.Sin(x * freq * Math.PI/ freqReduction));
+        Vector3 offset = 
 
-        _transform.position = _origin + new Vector3(x, y);
+        _transform.position = _origin + equation.GetPosition(_frame);
         _transform.rotation =
-            Quaternion.AngleAxis((float) Math.Cos(x * freq * Math.PI / freqReduction)*45, Vector3.forward);
+            Quaternion.AngleAxis(equation.GetDerivative(_frame)*45, Vector3.forward);
     }
 
     void FixedUpdate()
