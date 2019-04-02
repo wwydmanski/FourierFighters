@@ -1,0 +1,9 @@
+*.csproj
+*.sl*
+Temp/
+Library/
+Logs/
+obj/
+Packages/
+ProjectSettings/
+.vs/
