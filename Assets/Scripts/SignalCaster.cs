@@ -13,7 +13,10 @@ public class SignalCaster : MonoBehaviour
     void Start()
     {
         _currentProjectile = Instantiate(Projectile, transform.position+Vector3.right, Quaternion.identity).GetComponent<Projectile>();
-        StartCoroutine(Cast(100));
+        //_currentProjectile = _currentProjectile.ChangeType<ExplodingProjectile>();
+        //(_currentProjectile as ExplodingProjectile)?.AddExplosionEffect(ExplosionEffect);
+
+        StartCoroutine(Cast(60));
     }
 
     // Update is called once per frame
@@ -30,6 +33,6 @@ public class SignalCaster : MonoBehaviour
         _currentProjectile = _currentProjectile.ChangeType<ExplodingProjectile>();
         yield return new WaitForSecondsRealtime(0.01f);
         _currentProjectile.SetEquation(new SinusEquation(freq));
-        (_currentProjectile as ExplodingProjectile).AddExplosionEffect(ExplosionEffect);
+        (_currentProjectile as ExplodingProjectile)?.AddExplosionEffect(ExplosionEffect);
     }
 }

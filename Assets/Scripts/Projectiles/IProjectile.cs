@@ -18,6 +18,8 @@ namespace Assets.Scripts.Projectiles
         protected Transform Transform;
         protected int Frame;
 
+        public abstract void Die();
+
         void Start()
         {
             Equation = new SinusEquation();
@@ -37,7 +39,12 @@ namespace Assets.Scripts.Projectiles
 
         void FixedUpdate()
         {
-            Frame++;
+            if (Alive)
+            {
+                Frame++;
+                if (Frame >= 200 - Equation.freq)
+                    Die();
+            }
         }
 
         public void SetEquation(IEquation eq)
@@ -52,5 +59,6 @@ namespace Assets.Scripts.Projectiles
             Destroy(GetComponent<Projectile>());
             return gameObject.AddComponent<TLatter>();
         }
+
     }
 }
