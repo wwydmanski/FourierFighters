@@ -21,6 +21,7 @@ public class Controls : MonoBehaviour
         Move();
     }
 
+    
     private void Move()
     {
         float h = Input.GetAxis("Horizontal");
