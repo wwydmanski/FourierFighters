@@ -14,10 +14,35 @@ namespace Assets.Scripts.Projectiles
         private LineRenderer _lineDrawer;
 
 
-
         public void AddExplosionEffect(GameObject obj)
         {
             _explosionEffect = obj;
+        }
+
+        private Vector3 GetRcastCollision(Vector3 pos2)
+        {
+            if (Physics.Linecast(transform.position, pos2, out var hit))
+            {
+                if (hit.transform.tag == "wall")
+                {
+                    Debug.DrawLine(transform.position, hit.point,
+                        Color.yellow);
+                    return hit.point;
+                }
+                else
+                {
+                    RaycastHit[] hits;
+                    hits = Physics.RaycastAll(transform.position, hit.point - transform.position, (pos2-transform.position).magnitude);
+                    foreach (var raycastHit in hits)
+                    {
+                        if (raycastHit.transform.tag == "wall")
+                            return raycastHit.point;
+                    }
+                }
+            }
+
+            Debug.DrawLine(transform.position, pos2, Color.white);
+            return pos2;
         }
 
         private void DrawRadius(float radius)
@@ -35,7 +60,11 @@ namespace Assets.Scripts.Projectiles
                 theta += (2.0f * Mathf.PI * thetaScale);
                 float x = radius * Mathf.Cos(theta);
                 float y = radius * Mathf.Sin(theta);
-                _lineDrawer.SetPosition(i, new Vector3(transform.position.x + x, transform.position.y + y, 0));
+
+                Vector3 obstruction =
+                    GetRcastCollision(new Vector3(transform.position.x + x, transform.position.y + y, 0));
+
+                _lineDrawer.SetPosition(i, obstruction);
             }
         }
 
@@ -49,9 +78,13 @@ namespace Assets.Scripts.Projectiles
             foreach (Collider hit in colliders)
             {
                 var rb = hit.GetComponent<Rigidbody>();
-
-                if (rb != null)
-                    rb.AddExplosionForce(Equation.GetEnergy() * 10, explosionPos, RadiusBase);
+                if (rb != null && Physics.Linecast(transform.position, rb.position, out var lineOfSightObstructor))
+                {
+                    if (lineOfSightObstructor.transform.tag != "wall")
+                    {
+                        rb.AddExplosionForce(Equation.GetEnergy() * 10, explosionPos, realRadius);
+                    }
+                }
             }
 
             Destroy(gameObject, 5);
