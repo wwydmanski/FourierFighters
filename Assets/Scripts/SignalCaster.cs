@@ -1,38 +1,41 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
+using Assets.Scripts.Equations;
 using Assets.Scripts.Projectiles;
 using UnityEngine;
 
-public class SignalCaster : MonoBehaviour
+namespace Assets.Scripts
 {
-    public GameObject Projectile;
-    public GameObject ExplosionEffect;
-    private Projectile _currentProjectile;
-
-    // Start is called before the first frame update
-    void Start()
+    public class SignalCaster : MonoBehaviour
     {
-        _currentProjectile = Instantiate(Projectile, transform.position+Vector3.right, Quaternion.identity).GetComponent<Projectile>();
-        //_currentProjectile = _currentProjectile.ChangeType<ExplodingProjectile>();
-        //(_currentProjectile as ExplodingProjectile)?.AddExplosionEffect(ExplosionEffect);
+        public GameObject Projectile;
+        public GameObject ExplosionEffect;
+        private Projectile _currentProjectile;
 
-        StartCoroutine(Cast(60));
-    }
+        // Start is called before the first frame update
+        void Start()
+        {
+            _currentProjectile = Instantiate(Projectile, transform.position+Vector3.right, Quaternion.identity).GetComponent<Projectile>();
+            //_currentProjectile = _currentProjectile.ChangeType<ExplodingProjectile>();
+            //(_currentProjectile as ExplodingProjectile)?.AddExplosionEffect(ExplosionEffect);
 
-    // Update is called once per frame
-    void Update()
-    {
+            StartCoroutine(Cast(60, 1));
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
         
-    }
+        }
 
-    IEnumerator Cast(float freq)
-    {
-        yield return new WaitForSecondsRealtime(1);
+        IEnumerator Cast(float freq, int waitTime)
+        {
+            yield return new WaitForSecondsRealtime(waitTime);
 
-        _currentProjectile = Instantiate(Projectile, transform.position + Vector3.right, Quaternion.identity).GetComponent<Projectile>();
-        _currentProjectile = _currentProjectile.ChangeType<ExplodingProjectile>();
-        yield return new WaitForSecondsRealtime(0.01f);
-        _currentProjectile.SetEquation(new SinusEquation(freq));
-        (_currentProjectile as ExplodingProjectile)?.AddExplosionEffect(ExplosionEffect);
+            _currentProjectile = Instantiate(Projectile, transform.position + Vector3.right, Quaternion.identity).GetComponent<Projectile>();
+            _currentProjectile = _currentProjectile.ChangeType<ExplodingProjectile>();
+            yield return new WaitForSecondsRealtime(0.01f);
+            _currentProjectile.SetEquation(new SinusEquation(freq));
+            (_currentProjectile as ExplodingProjectile)?.AddExplosionEffect(ExplosionEffect);
+        }
     }
 }

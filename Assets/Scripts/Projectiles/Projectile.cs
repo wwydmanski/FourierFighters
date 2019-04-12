@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Assets.Scripts.Equations;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Assets.Scripts.Projectiles
 {
@@ -13,10 +12,11 @@ namespace Assets.Scripts.Projectiles
     {
         protected Vector3 Origin;
         protected bool Alive = true;
-        protected IEquation Equation;
+        protected Equation Equation;
 
         protected Transform Transform;
         protected int Frame;
+        protected float TimeLeft = 500;
 
         public abstract void Die();
 
@@ -42,15 +42,21 @@ namespace Assets.Scripts.Projectiles
             if (Alive)
             {
                 Frame++;
-                if (Frame >= 200 - Equation.freq)
+                TimeLeft -= Equation.Freq/15;
+                if (TimeLeft <= 0)
                     Die();
             }
         }
 
-        public void SetEquation(IEquation eq)
+        public void SetEquation(Equation eq)
         {
             Equation = eq;
             Debug.Log("Changed equation");
+        }
+
+        public Equation GetEquation()
+        {
+            return Equation;
         }
 
         public Projectile ChangeType<TLatter>() 
@@ -58,6 +64,11 @@ namespace Assets.Scripts.Projectiles
         {
             Destroy(GetComponent<Projectile>());
             return gameObject.AddComponent<TLatter>();
+        }
+
+        public void Attenuate(float db)
+        {
+            this.Equation.Attenuate(db);
         }
 
     }
