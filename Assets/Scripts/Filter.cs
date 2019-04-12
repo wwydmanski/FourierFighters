@@ -6,11 +6,10 @@ using UnityEngine;
 
 public class Filter : MonoBehaviour
 {
-    public int BandStart;
+    public int BandStart = 10;
+    public int Attenuation = 10;
 
     private int _bandWidth = 20;
-
-    private int decibels = 10;
 
     // Start is called before the first frame update
     void Start()
@@ -33,7 +32,7 @@ public class Filter : MonoBehaviour
         {
             float freq = proc.GetEquation().Freq;
             if (BandStart <= freq && freq < (BandStart + _bandWidth))
-                proc.Attenuate(decibels);
+                proc.Attenuate(Attenuation);
         }
     }
 }
