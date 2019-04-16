@@ -11,6 +11,7 @@ namespace Assets.Scripts.Projectiles
     public abstract class Projectile : MonoBehaviour
     {
         protected Vector3 Origin;
+        protected Vector3 Direction;
         protected bool Alive = true;
         protected Equation Equation;
 
@@ -31,7 +32,7 @@ namespace Assets.Scripts.Projectiles
         {
             if (Alive)
             {
-                Transform.position = Origin + Equation.GetPosition(Frame);
+                Transform.position = Origin + Equation.GetPosition(Frame) * Direction.x;
                 Transform.rotation =
                     Quaternion.AngleAxis(Equation.GetDerivative(Frame) * 45, Vector3.forward);
             }
@@ -52,6 +53,11 @@ namespace Assets.Scripts.Projectiles
         {
             Equation = eq;
             Debug.Log("Changed equation");
+        }
+
+        public void SetDirection(Vector3 direction)
+        {
+            Direction = direction;
         }
 
         public Equation GetEquation()
