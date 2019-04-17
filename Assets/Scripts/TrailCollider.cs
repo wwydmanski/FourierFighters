@@ -45,7 +45,7 @@ namespace Assets.Scripts
             this._trail = GetComponent<TrailRenderer>();
             _cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
             _cube.GetComponent<BoxCollider>().isTrigger = true;
-            _cube.GetComponent<MeshRenderer>().enabled = false;
+            _cube.GetComponent<Renderer>().material = Resources.Load("UCLAGameLab/Wireframe/Materials/Wireframe", typeof(Material)) as Material;
 
             TailColliderHandler handler = _cube.AddComponent<TailColliderHandler>();
             handler.Assign(transform.parent.gameObject);
@@ -71,13 +71,13 @@ namespace Assets.Scripts
 
         private Vector3 CalculateSizeAndPosition(IList<Vector3> positions, out Vector3 transformPosition)
         {
-            var maxX = positions.Max(vertex => vertex.x);
-            var minX = positions.Min(vertex => vertex.x);
-            var maxY = positions.Max(vertex => vertex.y);
-            var minY = positions.Min(vertex => vertex.y);
+            var maxX = TakeLast(positions, positions.Count / 2).Max(vertex => vertex.x);
+            var minX = TakeLast(positions, positions.Count / 2).Min(vertex => vertex.x);
+            var maxY = TakeLast(positions, positions.Count / 2).Max(vertex => vertex.y);
+            var minY = TakeLast(positions, positions.Count / 2).Min(vertex => vertex.y);
 
             var size = _cube.transform.lossyScale;
-            size.x = (maxX - minX);
+            size.x = (maxX - minX)/2;
             size.y = (maxY - minY);
             size.z = 0.5f;
 
@@ -92,6 +92,11 @@ namespace Assets.Scripts
             Destroy(_cube);
             Destroy(this);
             Debug.Log("Executed");
+        }
+
+        public static IEnumerable<T> TakeLast<T>(IEnumerable<T> coll, int N)
+        {
+            return coll.Reverse().Take(N).Reverse();
         }
     }
 }
