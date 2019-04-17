@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Assets.Scripts.Equations;
+using Assets.Scripts;
 using UnityEngine;
 using Object = UnityEngine.Object;
+
 
 namespace Assets.Scripts.Projectiles
 {
@@ -34,22 +36,16 @@ namespace Assets.Scripts.Projectiles
 
         public override void Die()
         {
-            var realRadius = RadiusBase * Equation.GetEnergy() / 40;
+            if (Alive)
+            {
+                var realRadius = RadiusBase * Equation.GetEnergy() / 40;
 
-            var explosion = new Explosion(gameObject.AddComponent<LineRenderer>(), transform);
-            explosion.DrawParticles(_explosionEffect, Equation.GetEnergy());
-            explosion.Explode(realRadius, Equation.GetEnergy());
+                var explosion = new Explosion(gameObject.AddComponent<LineRenderer>(), transform);
+                explosion.DrawParticles(_explosionEffect, Equation.GetEnergy());
+                explosion.Explode(realRadius, Equation.GetEnergy());
 
-            Destroy();
-        }
-
-        private void Destroy()
-        {
-            Destroy(gameObject, 5);
-            Destroy(GetComponent<BoxCollider>());
-            Destroy(GetComponent<Rigidbody>());
-            Destroy(GetComponent<ParticleSystem>());
-            Alive = false;
+                Destroy();
+            }
         }
     }
 

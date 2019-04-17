@@ -4914,7 +4914,7 @@ TrailRenderer:
     shadowBias: 0.5
     generateLightingData: 1
   m_MinVertexDistance: 0.1
-  m_Autodestruct: 0
+  m_Autodestruct: 1
   m_Emitting: 1
 --- !u!114 &1902941763035146764
 MonoBehaviour:
@@ -4925,6 +4925,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 7169641283023452620}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b5e80719a57932409e88af099874274, type: 3}
+  m_Script: {fileID: 11500000, guid: 5be96e08c309f5b45b09044aea4b36bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

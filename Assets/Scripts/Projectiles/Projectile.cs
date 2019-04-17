@@ -12,20 +12,24 @@ namespace Assets.Scripts.Projectiles
     {
         protected Vector3 Origin;
         protected Vector3 Direction;
-        protected bool Alive = true;
         protected Equation Equation;
 
         protected Transform Transform;
         protected int Frame;
         protected float TimeLeft = 500;
 
+        public bool Alive = true;
         public abstract void Die();
+        public Guid Uuid;
 
         void Start()
         {
             Equation = new SinusEquation();
+            gameObject.tag = "projectile";
+            
             Transform = GetComponent<Transform>();
             Origin = transform.position;
+            Uuid = Guid.NewGuid();
         }
 
         void Update()
@@ -77,5 +81,14 @@ namespace Assets.Scripts.Projectiles
             this.Equation.Attenuate(db);
         }
 
+        protected void Destroy()
+        {
+            Destroy(gameObject, 5);
+            Destroy(GetComponent<BoxCollider>());
+            Destroy(GetComponent<Rigidbody>());
+            Destroy(GetComponent<ParticleSystem>());
+            GetComponentInChildren<TrailCollider>().Destroy();
+            Alive = false;
+        }
     }
 }

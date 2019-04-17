@@ -22,7 +22,7 @@ namespace Assets.Scripts
             _transform = GetComponent<Transform>();
             StartCoroutine(Cast(30, 0));
 
-            StartCoroutine(CastExploding(60, 1));
+            StartCoroutine(CastExploding(60, 2));
         }
 
         // Update is called once per frame

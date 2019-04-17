@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Assets.Scripts;
 using Assets.Scripts.Equations;
 using Assets.Scripts.Projectiles;
 using UnityEngine;
@@ -15,19 +16,22 @@ class BasicProjectile : Projectile
 
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision.collider.name);
-        var colliderProjectile = collision.collider.gameObject.GetComponent<Projectile>();
+        if (Alive)
+        {
+            Debug.Log(collision.collider.name);
+            var colliderProjectile = collision.collider.gameObject.GetComponent<Projectile>();
 
-        collision.rigidbody?.AddForce(new Vector3(1,1)*this.Equation.GetEnergy()*_energyCoeff, ForceMode.Impulse);
-        Die();
+            collision.rigidbody?.AddForce(new Vector3(1, 1) * this.Equation.GetEnergy() * _energyCoeff,
+                ForceMode.Impulse);
+            Die();
+        }
     }
 
     public override void Die()
     {
-        Destroy(gameObject, 5);
-        Destroy(GetComponent<BoxCollider>());
-        Destroy(GetComponent<Rigidbody>());
-        Destroy(GetComponent<ParticleSystem>());
-        Alive = false;
+        if (Alive)
+        {
+            Destroy();
+        }
     }
 }
