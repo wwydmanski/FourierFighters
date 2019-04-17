@@ -83,12 +83,12 @@ namespace Assets.Scripts.Projectiles
 
         protected void Destroy()
         {
+            Alive = false;
             Destroy(gameObject, 5);
-            Destroy(GetComponent<BoxCollider>());
+            Destroy(GetComponent<SphereCollider>());
             Destroy(GetComponent<Rigidbody>());
             Destroy(GetComponent<ParticleSystem>());
             GetComponentInChildren<TrailCollider>().Destroy();
-            Alive = false;
         }
     }
 }

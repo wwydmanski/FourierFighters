@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Assets.Scripts.Projectiles;
 using UnityEngine;
 
@@ -7,30 +9,25 @@ namespace Assets.Scripts
 {
     public class TailColliderHandler : MonoBehaviour
     {
-        private float _startTime;
-        private Guid _parentUuid;
+        private GameObject _parent;
 
-        public void Assign(Guid uuid)
+        public void Assign(GameObject parent)
         {
-            _parentUuid = uuid;
-        }
-
-        void Start()
-        {
-            _startTime = Time.time;
+            _parent = parent;
         }
 
         // Update is called once per frame
         void OnTriggerEnter(Collider other)
         {
-            if (!(Time.time - _startTime > 0.1)) return;
+            var parentProjectile = _parent.GetComponent<Projectile>();
+            Guid parentUuid = parentProjectile.Uuid;
 
             if (other.tag == "projectile")
             {
                 var projectile = other.GetComponent<Projectile>();
-                if (projectile.Uuid != _parentUuid && projectile.Alive)
+                if (projectile.Uuid != parentUuid && projectile.Alive && parentProjectile.Alive)
                 {
-                    Debug.Log("TailColliderHandler triggered");
+                    parentProjectile.Die();
                     projectile.Die();
                 }
             }
@@ -48,11 +45,10 @@ namespace Assets.Scripts
             this._trail = GetComponent<TrailRenderer>();
             _cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
             _cube.GetComponent<BoxCollider>().isTrigger = true;
-            _cube.GetComponent<BoxCollider>().tag = "projectile";
             _cube.GetComponent<MeshRenderer>().enabled = false;
 
             TailColliderHandler handler = _cube.AddComponent<TailColliderHandler>();
-            handler.Assign(GetComponentInParent<Projectile>().Uuid);
+            handler.Assign(transform.parent.gameObject);
 
             _cube.transform.position = gameObject.transform.position;
             _cube.transform.localScale = new Vector3(1,1,1);
@@ -61,28 +57,34 @@ namespace Assets.Scripts
         void Update()
         {
             var positions = new Vector3[500];
-            var vertNum = _trail.GetPositions(positions);
+            var verticesCount = _trail.GetPositions(positions);
 
-            if (vertNum > 2)
+            if (verticesCount > 2)
             {
-                positions = new Vector3[vertNum];
+                positions = new Vector3[verticesCount];
                 _trail.GetPositions(positions);
-                var maxX = positions.Max(vertex => vertex.x);
-                float minX = positions.Min(vertex => vertex.x);
-                float maxY = positions.Max(vertex => vertex.y);
-                float minY = positions.Min(vertex => vertex.y);
-
-                Vector3 size = _cube.transform.lossyScale;
-                size.x = (maxX - minX);
-                size.y = (maxY - minY);
-                size.z = 0.5f;
-
+                var size = CalculateSizeAndPosition(positions, out var transformPosition);
                 _cube.transform.localScale = size;
-                var transformPosition = gameObject.transform.position;
-                transformPosition.x += (size.x / 2) * Math.Sign(positions[0].x - positions[1].x);
-                transformPosition.y = (maxY + minY) / 2;
                 _cube.transform.position = transformPosition;
             }
+        }
+
+        private Vector3 CalculateSizeAndPosition(IList<Vector3> positions, out Vector3 transformPosition)
+        {
+            var maxX = positions.Max(vertex => vertex.x);
+            var minX = positions.Min(vertex => vertex.x);
+            var maxY = positions.Max(vertex => vertex.y);
+            var minY = positions.Min(vertex => vertex.y);
+
+            var size = _cube.transform.lossyScale;
+            size.x = (maxX - minX);
+            size.y = (maxY - minY);
+            size.z = 0.5f;
+
+            transformPosition = gameObject.transform.position;
+            transformPosition.x += (size.x / 2) * Math.Sign(positions[0].x - positions[1].x);
+            transformPosition.y = (maxY + minY) / 2;
+            return size;
         }
 
         public void Destroy()
