@@ -25,8 +25,8 @@ namespace Assets.Scripts.Equations
 
         public override Vector3 GetPosition(int frame)
         {
-            float x = (float)(frame * speed);
-            float y = (float)(amplitude * Math.Sin(x * Freq * Math.PI / freqReduction));
+            var x = frame * speed;
+            var y = (float)(amplitude * Math.Sin(x * Freq * Math.PI / freqReduction));
 
             return new Vector3(x, y);
         }

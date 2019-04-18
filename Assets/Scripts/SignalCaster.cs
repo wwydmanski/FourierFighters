@@ -14,25 +14,20 @@ namespace Assets.Scripts
         public bool Rotating;
         private Projectile _currentProjectile;
         private Transform _transform;
-        private Quaternion _direction;
-        private Vector3 _offset;
+        private Vector3 _direction;
         private float lastRotation;
 
-        // Start is called before the first frame update
         void Start()
         {
             _transform = GetComponent<Transform>();
-            StartCoroutine(Cast(30, 0));
-
-            StartCoroutine(CastExploding(60, 2));
-            //_direction = Vector3.right * (float)(Math.Cos(transform.rotation.y * Math.PI));
-            _direction = Quaternion.identity;
+            _direction = Vector3.right;
             _direction.x = (float) (Math.Cos(_transform.rotation.y * Math.PI));
-            _offset = Vector3.right * (float)(Math.Cos(_transform.rotation.y * Math.PI));
+
+            StartCoroutine(Cast(30, 0, _direction, false));
+            StartCoroutine(Cast(60, 2, _direction, true));
             lastRotation = Time.time;
         }
 
-        // Update is called once per frame
         void Update()
         {
             if (Rotating)
@@ -41,34 +36,34 @@ namespace Assets.Scripts
                 {
                     lastRotation = Time.time;
                     _direction = Quaternion.Euler(0, 0, 90) * _direction;
-                    gameObject.transform.rotation = _direction;
-                    StartCoroutine(Cast(20, 0));
+                    Debug.DrawRay(_transform.position, _direction,
+                        Color.yellow, 0.5f);
+
+                    StartCoroutine(Cast(20, 0, _direction, false));
                 }
             }
         }
 
-        IEnumerator Cast(float freq, int waitTime)
+        void CastRight(bool exploding)
         {
-            yield return new WaitForSecondsRealtime(waitTime);
-            Debug.Log(_direction);
 
-            _currentProjectile = Instantiate(Projectile, transform.position + _offset, Quaternion.identity).GetComponent<Projectile>();
-            yield return new WaitForSecondsRealtime(0.01f);
-            _currentProjectile.SetEquation(new SinusEquation(freq));
-            _currentProjectile.SetDirection(_direction);
         }
 
-        IEnumerator CastExploding(float freq, int waitTime)
+        private IEnumerator Cast(float freq, int waitTime, Vector3 direction, bool exploding)
         {
             yield return new WaitForSecondsRealtime(waitTime);
 
-            _currentProjectile = Instantiate(Projectile, transform.position + _offset, Quaternion.identity).GetComponent<Projectile>();
-            _currentProjectile = _currentProjectile.ChangeType<ExplodingProjectile>();
+            _currentProjectile = Instantiate(Projectile, transform.position + direction, Quaternion.identity).GetComponent<Projectile>();
+
+            if(exploding)
+                _currentProjectile = _currentProjectile.ChangeType<ExplodingProjectile>();
+
             yield return new WaitForSecondsRealtime(0.01f);
             _currentProjectile.SetEquation(new SinusEquation(freq));
-            _currentProjectile.SetDirection(_direction);
+            _currentProjectile.SetDirection(direction);
 
-            (_currentProjectile as ExplodingProjectile)?.AddExplosionEffect(ExplosionEffect);
+            if (exploding)
+                (_currentProjectile as ExplodingProjectile)?.AddExplosionEffect(ExplosionEffect);
         }
     }
 }

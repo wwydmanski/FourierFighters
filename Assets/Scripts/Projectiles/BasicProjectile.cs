@@ -14,7 +14,8 @@ class BasicProjectile : Projectile
 
     private float _energyCoeff = 0.1f;
 
-    void OnCollisionEnter(Collision collision)
+    // ReSharper disable once UnusedMember.Local
+    private void OnCollisionEnter(Collision collision)
     {
         if (Alive)
         {
