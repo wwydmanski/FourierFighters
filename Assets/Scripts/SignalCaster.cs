@@ -15,9 +15,10 @@ namespace Assets.Scripts
         private Projectile _currentProjectile;
         private Transform _transform;
         private Vector3 _direction;
-        private float lastRotation;
+        private float _lastRotation;
 
-        void Start()
+        // ReSharper disable once UnusedMember.Local
+        private void Start()
         {
             _transform = GetComponent<Transform>();
             _direction = Vector3.right;
@@ -25,16 +26,17 @@ namespace Assets.Scripts
 
             StartCoroutine(Cast(30, 0, _direction, false));
             StartCoroutine(Cast(60, 2, _direction, true));
-            lastRotation = Time.time;
+            _lastRotation = Time.time;
         }
 
-        void Update()
+        // ReSharper disable once UnusedMember.Local
+        private void Update()
         {
             if (Rotating)
             {
-                if (Time.time - lastRotation > 1)
+                if (Time.time - _lastRotation > 1)
                 {
-                    lastRotation = Time.time;
+                    _lastRotation = Time.time;
                     _direction = Quaternion.Euler(0, 0, 90) * _direction;
                     Debug.DrawRay(_transform.position, _direction,
                         Color.yellow, 0.5f);
@@ -44,12 +46,27 @@ namespace Assets.Scripts
             }
         }
 
-        void CastRight(bool exploding)
+        public void CastRight(float freq, bool exploding=false, float waitTime=0)
         {
-
+            StartCoroutine(Cast(freq, waitTime, Vector3.right, exploding));
         }
 
-        private IEnumerator Cast(float freq, int waitTime, Vector3 direction, bool exploding)
+        public void CastLeft(float freq, bool exploding = false, float waitTime = 0)
+        {
+            StartCoroutine(Cast(freq, waitTime, Vector3.left, exploding));
+        }
+
+        public void CastUp(float freq, bool exploding = false, float waitTime = 0)
+        {
+            StartCoroutine(Cast(freq, waitTime, Vector3.up, exploding));
+        }
+
+        public void CastDown(float freq, bool exploding = false, float waitTime = 0)
+        {
+            StartCoroutine(Cast(freq, waitTime, Vector3.down, exploding));
+        }
+
+        private IEnumerator Cast(float freq, float waitTime, Vector3 direction, bool exploding)
         {
             yield return new WaitForSecondsRealtime(waitTime);
 
