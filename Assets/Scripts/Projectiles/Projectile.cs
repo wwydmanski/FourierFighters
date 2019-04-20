@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Assets.Scripts.Equations;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Assets.Scripts.Projectiles
 {
     public abstract class Projectile : MonoBehaviour
     {
         protected Vector3 Origin;
-        protected Quaternion Direction;
+        protected Vector3 Direction;
         protected Equation Equation;
 
         protected Transform Transform;
@@ -36,7 +38,14 @@ namespace Assets.Scripts.Projectiles
         {
             if (Alive)
             {
-                Transform.position = Origin + Equation.GetPosition(Frame) * Direction.x;
+                var calculatedPosition = Equation.GetPosition(Frame);
+                var newPosition = new Vector3
+                {
+                    x = calculatedPosition.x * Direction.x + calculatedPosition.y * Direction.y,
+                    y = calculatedPosition.x * Direction.y - calculatedPosition.y * Direction.x
+                };
+
+                Transform.position = Origin +  newPosition;
 
                 Transform.rotation =
                     Quaternion.AngleAxis(Equation.GetDerivative(Frame) * 45, Vector3.forward);
@@ -60,9 +69,10 @@ namespace Assets.Scripts.Projectiles
             Debug.Log("Changed equation");
         }
 
-        public void SetDirection(Quaternion direction)
+        public void SetDirection(Vector3 direction)
         {
             Direction = direction;
+            Debug.Log($"Direction: {Direction.x}");
         }
 
         public Equation GetEquation()
