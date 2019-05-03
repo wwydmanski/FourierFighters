@@ -24,8 +24,9 @@ namespace Assets.Scripts
             _direction = Vector3.right;
             _direction.x = (float) (Math.Cos(_transform.rotation.y * Math.PI));
 
-            StartCoroutine(Cast(30, 0, _direction, false));
-            StartCoroutine(Cast(60, 2, _direction, true));
+//            StartCoroutine(Cast(30, 0, _direction, false));
+//            StartCoroutine(Cast(60, 2, _direction, true));
+            CastRight(30, true, 0);
             _lastRotation = Time.time;
         }
 
