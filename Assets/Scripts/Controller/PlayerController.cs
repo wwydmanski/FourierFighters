@@ -284,12 +284,12 @@ namespace PlayerController
           {
               if (faceRight)
               {
-                  //TODO: Add Sinusoid cast
+                  signalCaster.CastRight(30,false,0);
                   print("Right");
               }
               else if (!faceRight)
               {
-                  //TODO: Add Sinusoid cast
+                  signalCaster.CastLeft(30, false, 0);
                   print("Left");
               }
           }
