@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Assets.Scripts;
 using UnityEngine;
 
 namespace PlayerController
@@ -13,6 +14,10 @@ namespace PlayerController
         [SerializeField]
         private PhysicsParams physicsParams;
 
+        private SignalCaster signalCaster = null;
+        private bool faceRight = true;
+        
+        
         public Vector3 Velocity { get { return(rb.velocity); } }
 
         public Vector3 VelocityRelativeGround { get { return(Velocity / PhysicsParams.onGroundMaxVelHorizontal); } }
@@ -81,6 +86,7 @@ namespace PlayerController
         {
             rb = GetComponent<Rigidbody>();
             allRenderers = new List<Renderer>(GetComponentsInChildren<Renderer>(true));
+            signalCaster = GetComponent<SignalCaster>();
 
         }
 
@@ -128,6 +134,7 @@ namespace PlayerController
         private void ProcessInput()
         {
             bool isKeyDownJump = Input.GetButton("Jump");
+            bool isKeyDownAttack = Input.GetButton("Fire1");
             float inputAxisX = Input.GetAxisRaw("Horizontal");
             bool isKeyDownLeft = inputAxisX < -0.5f;
             bool isKeyDownRight = inputAxisX > 0.5f;
@@ -153,71 +160,81 @@ namespace PlayerController
               //when pressing jump on ground we set the upwards velocity directly
               currentVelocity = new Vector3(currentVelocity.x, PhysicsParams.jumpUpVel, 0);
           }
-      } else if (isPlayerOnWall == true) {
-        //let's allow jumping again in case of being on the wall
-        if (isKeyDownJump == false) {
-          keyJumpRetrigger = true;
-        }
-        if (currentVelocity.y < 0) {//apply friction when moving downwards
-          SimAddForce(new Vector3(0, PhysicsParams.wallFriction, 0) * EntityMass);
-        }
-        if (currentVelocity.y < PhysicsParams.wallFrictionStrongVelThreshold) {//apply even more friction when moving downwards fast
-          SimAddForce(new Vector3(0, PhysicsParams.wallFrictionStrong, 0) * EntityMass);
-        }
-        if (isKeyDownJump == true && keyJumpRetrigger == true) {
-          keyJumpPressed = true;
-          keyJumpRetrigger = false;
-
-          //in case we are moving down -> let's set the velocity directly
-          //in case we are moving up -> sum up velocity
-          if (IsOnWallLeft == true) {
-            if (currentVelocity.y <= 0) {
-              currentVelocity = new Vector3(PhysicsParams.jumpWallVelHorizontal, PhysicsParams.jumpWallVelVertical, 0);
-            } else {
-              currentVelocity = new Vector3(PhysicsParams.jumpWallVelHorizontal, currentVelocity.y + PhysicsParams.jumpWallVelVertical, 0);
+          } else if (isPlayerOnWall == true) {
+            //let's allow jumping again in case of being on the wall
+            if (isKeyDownJump == false) {
+              keyJumpRetrigger = true;
             }
-          } else if (IsOnWallRight == true) {
-            if (currentVelocity.y <= 0)
-              currentVelocity = new Vector3(-PhysicsParams.jumpWallVelHorizontal, PhysicsParams.jumpWallVelVertical, 0);
-            else
-              currentVelocity = new Vector3(-PhysicsParams.jumpWallVelHorizontal, currentVelocity.y + PhysicsParams.jumpWallVelVertical, 0);
+            if (currentVelocity.y < 0) {//apply friction when moving downwards
+              SimAddForce(new Vector3(0, PhysicsParams.wallFriction, 0) * EntityMass);
+            }
+            if (currentVelocity.y < PhysicsParams.wallFrictionStrongVelThreshold) {//apply even more friction when moving downwards fast
+              SimAddForce(new Vector3(0, PhysicsParams.wallFrictionStrong, 0) * EntityMass);
+            }
+            if (isKeyDownJump == true && keyJumpRetrigger == true) {
+              keyJumpPressed = true;
+              keyJumpRetrigger = false;
+    
+              //in case we are moving down -> let's set the velocity directly
+              //in case we are moving up -> sum up velocity
+              if (IsOnWallLeft == true) {
+                if (currentVelocity.y <= 0) {
+                  currentVelocity = new Vector3(PhysicsParams.jumpWallVelHorizontal, PhysicsParams.jumpWallVelVertical, 0);
+                } else {
+                  currentVelocity = new Vector3(PhysicsParams.jumpWallVelHorizontal, currentVelocity.y + PhysicsParams.jumpWallVelVertical, 0);
+                }
+              } else if (IsOnWallRight == true) {
+                if (currentVelocity.y <= 0)
+                  currentVelocity = new Vector3(-PhysicsParams.jumpWallVelHorizontal, PhysicsParams.jumpWallVelVertical, 0);
+                else
+                  currentVelocity = new Vector3(-PhysicsParams.jumpWallVelHorizontal, currentVelocity.y + PhysicsParams.jumpWallVelVertical, 0);
+              }
+            }
           }
-        }
-      }
-      //did player lift the jump button?
-      if (isKeyDownJump == false) {
-        keyJumpPressed = false;
-      }
-
-      //let's apply force in case we are holding the jump key during a jump.
-      if (keyJumpPressed == true) {
-        SimAddForce(new Vector3(0, PhysicsParams.jumpUpForce, 0) * EntityMass);
-      }
-      //however let's stop doing that as soon as we fall down after the up-phase.
-      if (keyJumpPressed == true && currentVelocity.y <= 0) {
-        keyJumpPressed = false;
-      }
-
-      //let's apply additional gravity in case we're in air moving up but not holding the jump button
-      if (currentVelocity.y > 0) {
-        SimAddForce(new Vector3(0, PhysicsParams.jumpGravity, 0) * EntityMass);
-      }
-
-
-            
+          //did player lift the jump button?
+          if (isKeyDownJump == false) {
+            keyJumpPressed = false;
+          }
+    
+          //let's apply force in case we are holding the jump key during a jump.
+          if (keyJumpPressed == true) {
+            SimAddForce(new Vector3(0, PhysicsParams.jumpUpForce, 0) * EntityMass);
+          }
+          //however let's stop doing that as soon as we fall down after the up-phase.
+          if (keyJumpPressed == true && currentVelocity.y <= 0) {
+            keyJumpPressed = false;
+          }
+    
+          //let's apply additional gravity in case we're in air moving up but not holding the jump button
+          if (currentVelocity.y > 0) {
+            SimAddForce(new Vector3(0, PhysicsParams.jumpGravity, 0) * EntityMass);
+          }
+          
           //-----------------
           //IN AIR SIDEWAYS:
           if (isPlayerInAir == true) {
             //steering into moving direction (slow accel)
             if (isKeyDownLeft == true && currentVelocity.x <= 0)
-              SimAddForce(new Vector3(-PhysicsParams.inAirMoveHorizontalForce, 0, 0) * EntityMass);
+            {
+                faceRight = false;
+                SimAddForce(new Vector3(-PhysicsParams.inAirMoveHorizontalForce, 0, 0) * EntityMass);
+            }
             else if (isKeyDownRight == true && currentVelocity.x >= 0)
-              SimAddForce(new Vector3(PhysicsParams.inAirMoveHorizontalForce, 0, 0) * EntityMass);
+            {
+                faceRight = true;
+                SimAddForce(new Vector3(PhysicsParams.inAirMoveHorizontalForce, 0, 0) * EntityMass);
+            }
             //steering against moving direction (fast reverse accel)
             else if (isKeyDownLeft == true && currentVelocity.x >= 0)
-              SimAddForce(new Vector3(-PhysicsParams.inAirMoveHorizontalForceReverse, 0, 0) * EntityMass);
+            {
+                faceRight = false;
+                SimAddForce(new Vector3(-PhysicsParams.inAirMoveHorizontalForceReverse, 0, 0) * EntityMass);
+            }
             else if (isKeyDownRight == true && currentVelocity.x <= 0)
-              SimAddForce(new Vector3(PhysicsParams.inAirMoveHorizontalForceReverse, 0, 0) * EntityMass);
+            {
+                faceRight = true;
+                SimAddForce(new Vector3(PhysicsParams.inAirMoveHorizontalForceReverse, 0, 0) * EntityMass);
+            }
           }
     
           //-----------------
@@ -225,14 +242,26 @@ namespace PlayerController
           if (isPlayerInAir == false) {
             //steering into moving direction (slow accel)
             if (isKeyDownLeft == true && currentVelocity.x <= 0)
-              SimAddForce(new Vector3(-PhysicsParams.onGroundMoveHorizontalForce, 0, 0) * EntityMass);
+            {
+                faceRight = false;
+                SimAddForce(new Vector3(-PhysicsParams.onGroundMoveHorizontalForce, 0, 0) * EntityMass);
+            }
             else if (isKeyDownRight == true && currentVelocity.x >= 0)
-              SimAddForce(new Vector3(PhysicsParams.onGroundMoveHorizontalForce, 0) * EntityMass);
+            {
+                faceRight = true;
+                SimAddForce(new Vector3(PhysicsParams.onGroundMoveHorizontalForce, 0) * EntityMass);
+            }
             //steering against moving direction (fast reverse accel)
             else if (isKeyDownLeft == true && currentVelocity.x >= 0)
-              SimAddForce(new Vector3(-PhysicsParams.onGroundMoveHorizontalForceReverse, 0, 0) * EntityMass);
+            {
+                faceRight = false;
+                SimAddForce(new Vector3(-PhysicsParams.onGroundMoveHorizontalForceReverse, 0, 0) * EntityMass);
+            }
             else if (isKeyDownRight == true && currentVelocity.x <= 0)
-              SimAddForce(new Vector3(PhysicsParams.onGroundMoveHorizontalForceReverse, 0) * EntityMass);
+            {
+                faceRight = true;
+                SimAddForce(new Vector3(PhysicsParams.onGroundMoveHorizontalForceReverse, 0) * EntityMass);
+            }
             //not steering -> brake due to friction.
             else if (isKeyDownLeft != true && isKeyDownRight != true && currentVelocity.x > 0)
               SimAddForce(new Vector3(-PhysicsParams.groundFriction, 0, 0) * EntityMass);
@@ -248,6 +277,21 @@ namespace PlayerController
               SimAddForce(new Vector3(-PhysicsParams.groundFriction, 0, 0) * EntityMass);
               currentVelocity.x = 0;
             }
+          }
+          //-----------------
+          //PLAYER ATTACK
+          if (isKeyDownAttack == true)
+          {
+              if (faceRight)
+              {
+                  //TODO: Add Sinusoid cast
+                  print("Right");
+              }
+              else if (!faceRight)
+              {
+                  //TODO: Add Sinusoid cast
+                  print("Left");
+              }
           }
         }
 
