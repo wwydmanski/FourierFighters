@@ -9,7 +9,7 @@ namespace Assets.Scripts.Equations
 
         private float _displayAmplitudeCoeff = 0.2f;
         //public float freq = 60;
-        private float speed = 0.2f;
+        private float speed = 0.3f;
 
         private float freqReduction = 20;
         private float energyMultiplier = 30;

@@ -46,7 +46,7 @@ namespace Assets.Scripts
             _cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
             _cube.GetComponent<BoxCollider>().isTrigger = true;
             _cube.GetComponent<Renderer>().material = Resources.Load("UCLAGameLab/Wireframe/Materials/Wireframe", typeof(Material)) as Material;
-
+            _cube.GetComponent<Renderer>().enabled = false;
             TailColliderHandler handler = _cube.AddComponent<TailColliderHandler>();
             handler.Assign(transform.parent.gameObject);
 

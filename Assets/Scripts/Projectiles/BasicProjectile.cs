@@ -12,7 +12,7 @@ using UnityEngine;
 class BasicProjectile : Projectile
 {
 
-    private float _energyCoeff = 0.1f;
+    private float _energyCoeff = 1f;
 
     // ReSharper disable once UnusedMember.Local
     private void OnCollisionEnter(Collision collision)
