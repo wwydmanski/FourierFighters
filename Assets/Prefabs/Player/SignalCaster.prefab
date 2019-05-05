@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6199302104986134353}
   - component: {fileID: 6199302104986134318}
   - component: {fileID: 6199302104986134319}
+  - component: {fileID: 6080945155057182790}
   m_Layer: 0
   m_Name: SignalCaster
   m_TagString: Untagged
@@ -159,3 +160,17 @@ MonoBehaviour:
     wallFrictionStrongVelThreshold: -10
     wallFrictionStrong: 22.5
     version: 1
+--- !u!114 &6080945155057182790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6199302104986134352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1873c8360743dc94da6ebc7c4852e084, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathTag: Death
+  sceneName: Nowa
