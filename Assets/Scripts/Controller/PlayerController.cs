@@ -16,7 +16,7 @@ namespace PlayerController
 
         private SignalCaster signalCaster = null;
         private bool faceRight = true;
-        
+        private bool shot = false;
         
         public Vector3 Velocity { get { return(rb.velocity); } }
 
@@ -282,17 +282,24 @@ namespace PlayerController
           //PLAYER ATTACK
           if (isKeyDownAttack == true)
           {
-              if (faceRight)
+              if (!shot)
               {
-                  signalCaster.CastRight(100,false,0);
-                  print("Right");
-              }
-              else if (!faceRight)
-              {
-                  signalCaster.CastLeft(100, false, 0);
-                  print("Left");
+                  if (faceRight)
+                  {
+                      signalCaster.CastRight(30, false, 0);
+                      print("Right");
+                  }
+                  else if (!faceRight)
+                  {
+                      signalCaster.CastLeft(20, false, 0);
+                      print("Left");
+                  }
+
+                  shot = true;
               }
           }
+          else
+              shot = false;
         }
 
         public void ResetVelocity() {
