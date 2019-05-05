@@ -16,6 +16,7 @@ namespace Assets.Scripts
         private Transform _transform;
         private Vector3 _direction;
         private float _lastRotation;
+        private float _offsetMult = 1;
 
         // ReSharper disable once UnusedMember.Local
         private void Start()
@@ -28,11 +29,14 @@ namespace Assets.Scripts
 //            StartCoroutine(Cast(60, 2, _direction, true));
             CastRight(30, true, 0);
             _lastRotation = Time.time;
+            _offsetMult = GetComponent<Collider>().bounds.size.magnitude;
         }
 
         // ReSharper disable once UnusedMember.Local
         private void Update()
         {
+            _offsetMult = GetComponent<Collider>().bounds.size.magnitude;
+            Debug.Log("Offset mult: "+_offsetMult);
             if (Rotating)
             {
                 if (Time.time - _lastRotation > 1)
@@ -71,7 +75,7 @@ namespace Assets.Scripts
         {
             yield return new WaitForSecondsRealtime(waitTime);
 
-            _currentProjectile = Instantiate(Projectile, transform.position + direction, Quaternion.identity).GetComponent<Projectile>();
+            _currentProjectile = Instantiate(Projectile, transform.position + direction*_offsetMult, Quaternion.identity).GetComponent<Projectile>();
 
             if(exploding)
                 _currentProjectile = _currentProjectile.ChangeType<ExplodingProjectile>();

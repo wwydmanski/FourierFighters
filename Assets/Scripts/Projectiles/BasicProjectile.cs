@@ -22,7 +22,7 @@ class BasicProjectile : Projectile
             Debug.Log(collision.collider.name);
             var colliderProjectile = collision.collider.gameObject.GetComponent<Projectile>();
 
-            collision.rigidbody?.AddForce(new Vector3(1, 1) * this.Equation.GetEnergy() * _energyCoeff,
+            collision.rigidbody?.AddForce(Direction * this.Equation.GetEnergy() * _energyCoeff,
                 ForceMode.Impulse);
             Die();
         }
