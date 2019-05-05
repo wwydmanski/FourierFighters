@@ -17,6 +17,7 @@ namespace Assets.Scripts
         private Vector3 _direction;
         private float _lastRotation;
         private float _offsetMult = 1;
+        private float _y_offset = 0.3f;
 
         // ReSharper disable once UnusedMember.Local
         private void Start()
@@ -71,11 +72,18 @@ namespace Assets.Scripts
             StartCoroutine(Cast(freq, waitTime, Vector3.down, exploding));
         }
 
+        public void CastAngle(float freq, Vector3 direction, bool exploding = false, float waitTime = 0)
+        {
+            StartCoroutine(Cast(freq, waitTime, direction, exploding));
+        }
+
         private IEnumerator Cast(float freq, float waitTime, Vector3 direction, bool exploding)
         {
             yield return new WaitForSecondsRealtime(waitTime);
 
-            _currentProjectile = Instantiate(Projectile, transform.position + direction*_offsetMult, Quaternion.identity).GetComponent<Projectile>();
+            var offset = direction*_offsetMult;
+            offset.y += _y_offset;
+            _currentProjectile = Instantiate(Projectile, transform.position + offset, Quaternion.identity).GetComponent<Projectile>();
 
             if(exploding)
                 _currentProjectile = _currentProjectile.ChangeType<ExplodingProjectile>();
