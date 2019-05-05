@@ -141,8 +141,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   physicsParams:
-    playerMass: 3
-    gameGravity: -10
+    playerMass: 1
+    gameGravity: -7
     jumpUpForce: 0.25
     jumpUpVel: 18.75
     jumpGravity: -22.5
