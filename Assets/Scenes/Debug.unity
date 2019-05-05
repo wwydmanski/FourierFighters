@@ -612,7 +612,7 @@ MonoBehaviour:
     type: 3}
   ExplosionEffect: {fileID: 7164360731095726891, guid: bb93816ef08bada4db539c2f75a9810d,
     type: 3}
-  Rotating: 0
+  Rotating: 1
 --- !u!135 &180650713
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4140,7 +4140,7 @@ Transform:
   m_GameObject: {fileID: 1065507211}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 27.99, y: 23.203114, z: -60.169964}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.6405382, y: 1.6405382, z: 1.6405382}
   m_Children: []
   m_Father: {fileID: 419384074}
   m_RootOrder: 4
@@ -5193,7 +5193,7 @@ MonoBehaviour:
     type: 3}
   ExplosionEffect: {fileID: 7164360731095726891, guid: bb93816ef08bada4db539c2f75a9810d,
     type: 3}
-  Rotating: 0
+  Rotating: 1
 --- !u!135 &1368930822
 SphereCollider:
   m_ObjectHideFlags: 0
