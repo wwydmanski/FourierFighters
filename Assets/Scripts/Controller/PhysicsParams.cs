@@ -6,8 +6,8 @@ namespace PlayerController {
     [System.Serializable]
     public class PhysicsParams {
 
-        public float playerMass = 12.5f;
-        public float gameGravity = -19.5f;
+        public float playerMass = 1f;
+        public float gameGravity = -40f;
         public float jumpUpForce = 0.25f;
         public float jumpUpVel = 18.75f;
         [Tooltip("Additional gravity for jumping in case we're not holding down the jump button. Supposed to act as a penalty.")]
@@ -30,6 +30,8 @@ namespace PlayerController {
         public float wallFrictionStrongVelThreshold = -10;
         [Tooltip("Gets applied when moving down along the wall too fast.")]
         public float wallFrictionStrong = 22.5f;
+
+        public float projectileForce = 1000;
 
         #region serialization version
         [HideInInspector]

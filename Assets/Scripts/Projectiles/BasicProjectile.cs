@@ -22,7 +22,14 @@ class BasicProjectile : Projectile
             Debug.Log(collision.collider.name);
             var colliderProjectile = collision.collider.gameObject.GetComponent<Projectile>();
 
-            collision.rigidbody?.AddForce(Direction * this.Equation.GetEnergy() * _energyCoeff,
+            var dir = Direction;
+            dir.y = Math.Abs(dir.y) < 0.01 ? 100 : dir.y;
+
+            var controller = collision.collider.gameObject.GetComponent<PlayerController.PlayerController>();
+            if(controller != null)
+                controller.ProjectileHit(Direction * this.Equation.GetEnergy() * _energyCoeff);
+            else
+                collision.rigidbody?.AddForce(Direction * this.Equation.GetEnergy() * _energyCoeff,
                 ForceMode.Impulse);
             Die();
         }
