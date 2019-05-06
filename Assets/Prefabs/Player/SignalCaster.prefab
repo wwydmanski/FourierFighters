@@ -31,7 +31,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6199302104986134352}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.85, y: -1.49, z: -0.66999817}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -142,7 +142,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   physicsParams:
     playerMass: 1
-    gameGravity: -7
+    gameGravity: -7.76
     jumpUpForce: 0.25
     jumpUpVel: 18.75
     jumpGravity: -22.5
@@ -154,11 +154,11 @@ MonoBehaviour:
     onGroundMaxVelHorizontal: 25
     onGroundMoveHorizontalForce: 20
     onGroundMoveHorizontalForceReverse: 45
-    groundFriction: 35
-    groundFrictionEpsilon: 0.75
+    groundFriction: 5.98
+    groundFrictionEpsilon: 0.1
     wallFriction: 11.25
-    wallFrictionStrongVelThreshold: -10
-    wallFrictionStrong: 22.5
+    wallFrictionStrongVelThreshold: -9.73
+    wallFrictionStrong: 4.83
     version: 1
 --- !u!114 &6080945155057182790
 MonoBehaviour:
