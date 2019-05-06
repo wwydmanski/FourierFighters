@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Assets.Scripts;
 using UnityEngine;
 
@@ -9,91 +8,64 @@ namespace PlayerController
     [RequireComponent(typeof(Collider))]
     public class PlayerController : MonoBehaviour
     {
-        private Rigidbody rb { get; set;}
+        private Vector3 _currentVelocity = Vector3.zero;
+        private bool _faceRight = true;
 
-        [SerializeField]
-        private PhysicsParams physicsParams;
+        private bool _keyJumpPressed;
+        private bool _keyJumpRetrigger;
 
-        private SignalCaster signalCaster = null;
-        private bool faceRight = true;
-        private bool shot = false;
-        
-        public Vector3 Velocity { get { return(rb.velocity); } }
+        private bool _shot;
 
-        public Vector3 VelocityRelativeGround { get { return(Velocity / PhysicsParams.onGroundMaxVelHorizontal); } }
+        private SignalCaster _signalCaster;
 
-        private float timeRealLastGroundCollision = 0;
-        private float timeRealLastWallLeftCollision = 0;
-        private float timeRealLastWallRightCollision = 0;
+        private float _timeRealLastGroundCollision;
+        private float _timeRealLastWallLeftCollision;
+        private float _timeRealLastWallRightCollision;
+        private Rigidbody Rb { get; set; }
 
-        public bool IsOnGround {
-            get {
-                return GetIsColliding(timeRealLastGroundCollision);
-            }
+        public Vector3 Velocity => Rb.velocity;
+
+        public Vector3 VelocityRelativeGround => Velocity / PhysicsParams.onGroundMaxVelHorizontal;
+
+        public bool IsOnGround => GetIsColliding(_timeRealLastGroundCollision);
+
+        public bool IsOnWallLeft => GetIsColliding(_timeRealLastWallLeftCollision);
+
+        public bool IsOnWallRight => GetIsColliding(_timeRealLastWallRightCollision);
+
+        public bool IsInAir { get; private set; }
+
+        private float EntityMass => PhysicsParams.playerMass;
+
+        [field: SerializeField] public PhysicsParams PhysicsParams { get; set; }
+
+        public Vector3 CurrentForce { get; private set; } = Vector3.zero;
+
+        public bool IsOnWall { get; private set; }
+
+        public List<Renderer> AllRenderers { get; private set; }
+
+        public Vector3 Position
+        {
+            get => transform.position;
+            set => transform.position = value;
         }
 
-        public bool IsOnWallLeft {
-            get {
-                return GetIsColliding(timeRealLastWallLeftCollision);
-            }
+        private bool GetIsColliding(float timeLastCollision)
+        {
+            return Time.realtimeSinceStartup < timeLastCollision + 0.05f;
         }
 
-        public bool IsOnWallRight {
-            get {
-                return GetIsColliding(timeRealLastWallRightCollision);
-            }
-        }
-
-        public bool IsInAir { get { return isPlayerInAir; } }
-
-        private bool GetIsColliding(float timeLastCollision) {
-            return(Time.realtimeSinceStartup < timeLastCollision + 0.05f);
-        }
-
-        private Vector3 currentVelocity = Vector3.zero;
-        private Vector3 currentForce = Vector3.zero;
-
-        private float EntityMass { get { return(PhysicsParams.playerMass); } }
-
-        private bool isPlayerInAir = false;
-        private bool keyJumpRetrigger = false;
-        private bool keyJumpPressed = false;
-        private bool isPlayerOnWall = false;
-
-        public PhysicsParams PhysicsParams {
-            get { return physicsParams; }
-            set { physicsParams = value; }
-        }
-
-        public Vector3 CurrentForce { get { return currentForce; } }
-
-        public bool IsOnWall { get { return isPlayerOnWall; } }
-
-        private List<Renderer> allRenderers;
-
-        public List<Renderer> AllRenderers { get { return allRenderers; } }
-
-        public Vector3 Position {
-            get {
-                return transform.position;
-            }
-            set {
-                transform.position = value;
-            }
-        }
-        
         public void Awake()
         {
-            rb = GetComponent<Rigidbody>();
-            allRenderers = new List<Renderer>(GetComponentsInChildren<Renderer>(true));
-            signalCaster = GetComponent<SignalCaster>();
-
+            Rb = GetComponent<Rigidbody>();
+            AllRenderers = new List<Renderer>(GetComponentsInChildren<Renderer>(true));
+            _signalCaster = GetComponent<SignalCaster>();
         }
 
         // Update is called once per frame
         public void Update()
         {
-
             //let's reset forces to 0 and then add regular gravitation
             SimResetForce();
             SimAddForce(new Vector3(0, PhysicsParams.gameGravity, 0) * EntityMass);
@@ -105,249 +77,270 @@ namespace PlayerController
             ComputeVelocity(Time.deltaTime);
 
             //collision detection with static world
-            isPlayerOnWall = IsOnWallLeft || IsOnWallRight;
-            isPlayerInAir = IsOnGround == false;
+            IsOnWall = IsOnWallLeft || IsOnWallRight;
+            IsInAir = IsOnGround == false;
         }
 
-        private void SimResetForce() {
-            currentForce = Vector3.zero;
+        private void SimResetForce()
+        {
+            CurrentForce = Vector3.zero;
         }
 
-        private void SimAddForce(Vector3 force) {
-            currentForce += force;
+        public void ProjectileHit(Vector3 force)
+        {
+            Debug.Log("Before hit: "+_currentVelocity);
+            CurrentForce += force*PhysicsParams.projectileForce;
+            ComputeVelocity(Time.deltaTime);
+            Debug.Log("After hit: "+_currentVelocity);
         }
 
-        private void ComputeVelocity(float dt) {
+        private void SimAddForce(Vector3 force)
+        {
+            CurrentForce += force;
+        }
 
-            currentVelocity += (currentForce / EntityMass) * dt;
+        private void ComputeVelocity(float dt)
+        {
+            _currentVelocity += CurrentForce / EntityMass * dt;
 
             //let's cap the speed in case its higher than the max
-            if (isPlayerInAir) {
-                currentVelocity.x = Mathf.Clamp(currentVelocity.x, -PhysicsParams.inAirMaxVelHorizontal, PhysicsParams.inAirMaxVelHorizontal);
-            } else {
-                currentVelocity.x = Mathf.Clamp(currentVelocity.x, -PhysicsParams.onGroundMaxVelHorizontal, PhysicsParams.onGroundMaxVelHorizontal);
-            }
+            if (IsInAir)
+                _currentVelocity.x = Mathf.Clamp(_currentVelocity.x, -PhysicsParams.inAirMaxVelHorizontal,
+                    PhysicsParams.inAirMaxVelHorizontal);
+            else
+                _currentVelocity.x = Mathf.Clamp(_currentVelocity.x, -PhysicsParams.onGroundMaxVelHorizontal,
+                    PhysicsParams.onGroundMaxVelHorizontal);
 
-            rb.velocity = currentVelocity;
+            Rb.velocity = _currentVelocity;
         }
 
         private void ProcessInput()
         {
-            bool isKeyDownJump = Input.GetButton("Jump");
-            bool isKeyDownAttack = Input.GetButton("Fire1");
-            float inputAxisX = Input.GetAxisRaw("Horizontal");
-            bool isKeyDownLeft = inputAxisX < -0.5f;
-            bool isKeyDownRight = inputAxisX > 0.5f;
+            var isKeyDownJump = Input.GetButton("Jump");
+            var isKeyDownAttack = Input.GetButton("Fire1");
+            var inputAxisX = Input.GetAxisRaw("Horizontal");
+            var isKeyDownLeft = inputAxisX < -0.5f;
+            var isKeyDownRight = inputAxisX > 0.5f;
 
             //-----------------
-      //JUMPING LOGIC:
-      //player is on ground
-      if (isPlayerInAir == false)
-      {
-          //in case the player is on ground and does not press the jump key, he
-          //should be allowed to jump
-          if (isKeyDownJump == false)
-          {
-              keyJumpRetrigger = true;
-          }
+            //JUMPING LOGIC:
+            //player is on ground
+            if (IsInAir == false)
+            {
+                //in case the player is on ground and does not press the jump key, he
+                //should be allowed to jump
+                if (isKeyDownJump == false) _keyJumpRetrigger = true;
 
-          //did player press down the jump button?
-          if (isKeyDownJump == true && keyJumpRetrigger == true)
-          {
-              keyJumpPressed = true;
-              keyJumpRetrigger = false;  
-              
-              //when pressing jump on ground we set the upwards velocity directly
-              currentVelocity = new Vector3(currentVelocity.x, PhysicsParams.jumpUpVel, 0);
-          }
-          } else if (isPlayerOnWall == true) {
-            //let's allow jumping again in case of being on the wall
-            if (isKeyDownJump == false) {
-              keyJumpRetrigger = true;
-            }
-            if (currentVelocity.y < 0) {//apply friction when moving downwards
-              SimAddForce(new Vector3(0, PhysicsParams.wallFriction, 0) * EntityMass);
-            }
-            if (currentVelocity.y < PhysicsParams.wallFrictionStrongVelThreshold) {//apply even more friction when moving downwards fast
-              SimAddForce(new Vector3(0, PhysicsParams.wallFrictionStrong, 0) * EntityMass);
-            }
-            if (isKeyDownJump == true && keyJumpRetrigger == true) {
-              keyJumpPressed = true;
-              keyJumpRetrigger = false;
-    
-              //in case we are moving down -> let's set the velocity directly
-              //in case we are moving up -> sum up velocity
-              if (IsOnWallLeft == true) {
-                if (currentVelocity.y <= 0) {
-                  currentVelocity = new Vector3(PhysicsParams.jumpWallVelHorizontal, PhysicsParams.jumpWallVelVertical, 0);
-                } else {
-                  currentVelocity = new Vector3(PhysicsParams.jumpWallVelHorizontal, currentVelocity.y + PhysicsParams.jumpWallVelVertical, 0);
-                }
-              } else if (IsOnWallRight == true) {
-                if (currentVelocity.y <= 0)
-                  currentVelocity = new Vector3(-PhysicsParams.jumpWallVelHorizontal, PhysicsParams.jumpWallVelVertical, 0);
-                else
-                  currentVelocity = new Vector3(-PhysicsParams.jumpWallVelHorizontal, currentVelocity.y + PhysicsParams.jumpWallVelVertical, 0);
-              }
-            }
-          }
-          //did player lift the jump button?
-          if (isKeyDownJump == false) {
-            keyJumpPressed = false;
-          }
-    
-          //let's apply force in case we are holding the jump key during a jump.
-          if (keyJumpPressed == true) {
-            SimAddForce(new Vector3(0, PhysicsParams.jumpUpForce, 0) * EntityMass);
-          }
-          //however let's stop doing that as soon as we fall down after the up-phase.
-          if (keyJumpPressed == true && currentVelocity.y <= 0) {
-            keyJumpPressed = false;
-          }
-    
-          //let's apply additional gravity in case we're in air moving up but not holding the jump button
-          if (currentVelocity.y > 0) {
-            SimAddForce(new Vector3(0, PhysicsParams.jumpGravity, 0) * EntityMass);
-          }
-          
-          //-----------------
-          //IN AIR SIDEWAYS:
-          if (isPlayerInAir == true) {
-            //steering into moving direction (slow accel)
-            if (isKeyDownLeft == true && currentVelocity.x <= 0)
-            {
-                faceRight = false;
-                SimAddForce(new Vector3(-PhysicsParams.inAirMoveHorizontalForce, 0, 0) * EntityMass);
-            }
-            else if (isKeyDownRight == true && currentVelocity.x >= 0)
-            {
-                faceRight = true;
-                SimAddForce(new Vector3(PhysicsParams.inAirMoveHorizontalForce, 0, 0) * EntityMass);
-            }
-            //steering against moving direction (fast reverse accel)
-            else if (isKeyDownLeft == true && currentVelocity.x >= 0)
-            {
-                faceRight = false;
-                SimAddForce(new Vector3(-PhysicsParams.inAirMoveHorizontalForceReverse, 0, 0) * EntityMass);
-            }
-            else if (isKeyDownRight == true && currentVelocity.x <= 0)
-            {
-                faceRight = true;
-                SimAddForce(new Vector3(PhysicsParams.inAirMoveHorizontalForceReverse, 0, 0) * EntityMass);
-            }
-          }
-    
-          //-----------------
-          //ON GROUND SIDEWAYS:
-          if (isPlayerInAir == false) {
-            //steering into moving direction (slow accel)
-            if (isKeyDownLeft == true && currentVelocity.x <= 0)
-            {
-                faceRight = false;
-                SimAddForce(new Vector3(-PhysicsParams.onGroundMoveHorizontalForce, 0, 0) * EntityMass);
-            }
-            else if (isKeyDownRight == true && currentVelocity.x >= 0)
-            {
-                faceRight = true;
-                SimAddForce(new Vector3(PhysicsParams.onGroundMoveHorizontalForce, 0) * EntityMass);
-            }
-            //steering against moving direction (fast reverse accel)
-            else if (isKeyDownLeft == true && currentVelocity.x >= 0)
-            {
-                faceRight = false;
-                SimAddForce(new Vector3(-PhysicsParams.onGroundMoveHorizontalForceReverse, 0, 0) * EntityMass);
-            }
-            else if (isKeyDownRight == true && currentVelocity.x <= 0)
-            {
-                faceRight = true;
-                SimAddForce(new Vector3(PhysicsParams.onGroundMoveHorizontalForceReverse, 0) * EntityMass);
-            }
-            //not steering -> brake due to friction.
-            else if (isKeyDownLeft != true && isKeyDownRight != true && currentVelocity.x > 0)
-              SimAddForce(new Vector3(-PhysicsParams.groundFriction, 0, 0) * EntityMass);
-            else if (isKeyDownLeft != true && isKeyDownRight != true && currentVelocity.x < 0)
-              SimAddForce(new Vector3(PhysicsParams.groundFriction, 0, 0) * EntityMass);
-    
-            //in case the velocity is close to 0 and no keys are pressed we should make the the player stop.
-            //to do this let's first undo the prior friction force, and then set the velocity to 0.
-            if (isKeyDownLeft != true && isKeyDownRight != true && currentVelocity.x > 0 && currentVelocity.x < PhysicsParams.groundFrictionEpsilon) {
-              SimAddForce(new Vector3(PhysicsParams.groundFriction, 0, 0) * EntityMass);
-              currentVelocity.x = 0;
-            } else if (isKeyDownLeft != true && isKeyDownRight != true && currentVelocity.x < 0 && currentVelocity.x > -PhysicsParams.groundFrictionEpsilon) {
-              SimAddForce(new Vector3(-PhysicsParams.groundFriction, 0, 0) * EntityMass);
-              currentVelocity.x = 0;
-            }
-          }
-          //-----------------
-          //PLAYER ATTACK
-          if (isKeyDownAttack == true)
-          {
-              if (!shot)
-              {
-                  if (faceRight)
-                  {
-                      signalCaster.CastRight(30, false, 0);
-                      print("Right");
-                  }
-                  else if (!faceRight)
-                  {
-                      signalCaster.CastLeft(20, false, 0);
-                      print("Left");
-                  }
-
-                  shot = true;
-              }
-          }
-          else
-              shot = false;
-        }
-
-        public void ResetVelocity() {
-            currentVelocity = Vector3.zero;
-        }
- 
-        public void OnCollisionStay(Collision collision) {
-
-            foreach (ContactPoint contactPoint in collision.contacts) {
-                if (GetIsVectorClose(new Vector3(0, 1, 0), contactPoint.normal, 0.05f))
+                //did player press down the jump button?
+                if (isKeyDownJump && _keyJumpRetrigger)
                 {
-                    
-                    timeRealLastGroundCollision = Time.realtimeSinceStartup;
-                    currentVelocity.y = Mathf.Clamp(currentVelocity.y, 0, Mathf.Abs(currentVelocity.y));
-                }
-                if (GetIsVectorClose(new Vector3(1, 0, 0), contactPoint.normal, 0.05f)) {
-                    timeRealLastWallLeftCollision = Time.realtimeSinceStartup;
-                    currentVelocity.x = Mathf.Clamp(currentVelocity.x, 0, Mathf.Abs(currentVelocity.x));
-                }
-                if (GetIsVectorClose(new Vector3(-1, 0, 0), contactPoint.normal, 0.05f)) {
-                    timeRealLastWallRightCollision = Time.realtimeSinceStartup;
-                    currentVelocity.x = Mathf.Clamp(currentVelocity.x, -Mathf.Abs(currentVelocity.x), 0);
-                }
-                if(GetIsVectorClose(Vector3.down, contactPoint.normal, 0.05f)) {
-                    currentVelocity.y = Mathf.Clamp(currentVelocity.y, -Mathf.Abs(currentVelocity.y), 0);
+                    _keyJumpPressed = true;
+                    _keyJumpRetrigger = false;
+
+                    //when pressing jump on ground we set the upwards velocity directly
+                    _currentVelocity = new Vector3(_currentVelocity.x, PhysicsParams.jumpUpVel, 0);
                 }
             }
-        }
-
-        private bool GetIsVectorClose(Vector3 vectorA, Vector3 vectorB, float error) {
-            if (Vector3.Distance(vectorA, vectorB) < error && Vector3.Distance(vectorA, vectorB) > -error)
+            else if (IsOnWall)
             {
-                return true;
+                //let's allow jumping again in case of being on the wall
+                if (isKeyDownJump == false) _keyJumpRetrigger = true;
+                if (_currentVelocity.y < 0) SimAddForce(new Vector3(0, PhysicsParams.wallFriction, 0) * EntityMass);
+                if (_currentVelocity.y < PhysicsParams.wallFrictionStrongVelThreshold)
+                    SimAddForce(new Vector3(0, PhysicsParams.wallFrictionStrong, 0) * EntityMass);
+                if (isKeyDownJump && _keyJumpRetrigger)
+                {
+                    _keyJumpPressed = true;
+                    _keyJumpRetrigger = false;
+
+                    //in case we are moving down -> let's set the velocity directly
+                    //in case we are moving up -> sum up velocity
+                    if (IsOnWallLeft)
+                    {
+                        if (_currentVelocity.y <= 0)
+                            _currentVelocity = new Vector3(PhysicsParams.jumpWallVelHorizontal,
+                                PhysicsParams.jumpWallVelVertical, 0);
+                        else
+                            _currentVelocity = new Vector3(PhysicsParams.jumpWallVelHorizontal,
+                                _currentVelocity.y + PhysicsParams.jumpWallVelVertical, 0);
+                    }
+                    else if (IsOnWallRight)
+                    {
+                        if (_currentVelocity.y <= 0)
+                            _currentVelocity = new Vector3(-PhysicsParams.jumpWallVelHorizontal,
+                                PhysicsParams.jumpWallVelVertical, 0);
+                        else
+                            _currentVelocity = new Vector3(-PhysicsParams.jumpWallVelHorizontal,
+                                _currentVelocity.y + PhysicsParams.jumpWallVelVertical, 0);
+                    }
+                }
+            }
+
+            //did player lift the jump button?
+            if (isKeyDownJump == false) _keyJumpPressed = false;
+
+            //let's apply force in case we are holding the jump key during a jump.
+            if (_keyJumpPressed) SimAddForce(new Vector3(0, PhysicsParams.jumpUpForce, 0) * EntityMass);
+            //however let's stop doing that as soon as we fall down after the up-phase.
+            if (_keyJumpPressed && _currentVelocity.y <= 0) _keyJumpPressed = false;
+
+            //let's apply additional gravity in case we're in air moving up but not holding the jump button
+            if (_currentVelocity.y > 0) SimAddForce(new Vector3(0, PhysicsParams.jumpGravity, 0) * EntityMass);
+
+            //-----------------
+            //IN AIR SIDEWAYS:
+            if (IsInAir)
+            {
+                //steering into moving direction (slow accel)
+                if (isKeyDownLeft && _currentVelocity.x <= 0)
+                {
+                    _faceRight = false;
+                    SimAddForce(new Vector3(-PhysicsParams.inAirMoveHorizontalForce, 0, 0) * EntityMass);
+                }
+                else if (isKeyDownRight && _currentVelocity.x >= 0)
+                {
+                    _faceRight = true;
+                    SimAddForce(new Vector3(PhysicsParams.inAirMoveHorizontalForce, 0, 0) * EntityMass);
+                }
+                //steering against moving direction (fast reverse accel)
+                else if (isKeyDownLeft && _currentVelocity.x >= 0)
+                {
+                    _faceRight = false;
+                    SimAddForce(new Vector3(-PhysicsParams.inAirMoveHorizontalForceReverse, 0, 0) * EntityMass);
+                }
+                else if (isKeyDownRight && _currentVelocity.x <= 0)
+                {
+                    _faceRight = true;
+                    SimAddForce(new Vector3(PhysicsParams.inAirMoveHorizontalForceReverse, 0, 0) * EntityMass);
+                }
+            }
+
+            //-----------------
+            //ON GROUND SIDEWAYS:
+            if (IsInAir == false)
+            {
+                //steering into moving direction (slow accel)
+                if (isKeyDownLeft && _currentVelocity.x <= 0)
+                {
+                    _faceRight = false;
+                    SimAddForce(new Vector3(-PhysicsParams.onGroundMoveHorizontalForce, 0, 0) * EntityMass);
+                }
+                else if (isKeyDownRight && _currentVelocity.x >= 0)
+                {
+                    _faceRight = true;
+                    SimAddForce(new Vector3(PhysicsParams.onGroundMoveHorizontalForce, 0) * EntityMass);
+                }
+                //steering against moving direction (fast reverse accel)
+                else if (isKeyDownLeft && _currentVelocity.x >= 0)
+                {
+                    _faceRight = false;
+                    SimAddForce(new Vector3(-PhysicsParams.onGroundMoveHorizontalForceReverse, 0, 0) * EntityMass);
+                }
+                else if (isKeyDownRight && _currentVelocity.x <= 0)
+                {
+                    _faceRight = true;
+                    SimAddForce(new Vector3(PhysicsParams.onGroundMoveHorizontalForceReverse, 0) * EntityMass);
+                }
+                //not steering -> brake due to friction.
+                else if (isKeyDownLeft != true && isKeyDownRight != true && _currentVelocity.x > 0)
+                {
+                    SimAddForce(new Vector3(-PhysicsParams.groundFriction, 0, 0) * EntityMass);
+                }
+                else if (isKeyDownLeft != true && isKeyDownRight != true && _currentVelocity.x < 0)
+                {
+                    SimAddForce(new Vector3(PhysicsParams.groundFriction, 0, 0) * EntityMass);
+                }
+
+                //in case the velocity is close to 0 and no keys are pressed we should make the the player stop.
+                //to do this let's first undo the prior friction force, and then set the velocity to 0.
+                if (isKeyDownLeft != true && isKeyDownRight != true && _currentVelocity.x > 0 &&
+                    _currentVelocity.x < PhysicsParams.groundFrictionEpsilon)
+                {
+                    SimAddForce(new Vector3(PhysicsParams.groundFriction, 0, 0) * EntityMass);
+                    _currentVelocity.x = 0;
+                }
+                else if (isKeyDownLeft != true && isKeyDownRight != true && _currentVelocity.x < 0 &&
+                         _currentVelocity.x > -PhysicsParams.groundFrictionEpsilon)
+                {
+                    SimAddForce(new Vector3(-PhysicsParams.groundFriction, 0, 0) * EntityMass);
+                    _currentVelocity.x = 0;
+                }
+            }
+
+            //-----------------
+            //PLAYER ATTACK
+            if (isKeyDownAttack)
+            {
+                if (!_shot)
+                {
+                    if (_faceRight)
+                    {
+                        _signalCaster.CastRight(30, false, 0);
+                        print("Right");
+                    }
+                    else if (!_faceRight)
+                    {
+                        _signalCaster.CastLeft(20, false, 0);
+                        print("Left");
+                    }
+
+                    _shot = true;
+                }
             }
             else
             {
-                return false;
+                _shot = false;
             }
-            
         }
 
-        public void OnLifeChanged (int life, Vector3 contactVector) {
-            const float forceEnemyCollision = 15.0f;
-            currentVelocity = contactVector.normalized * forceEnemyCollision;
+        public void ResetVelocity()
+        {
+            _currentVelocity = Vector3.zero;
         }
-      
-        public void ResetPlayer() {
-            currentVelocity = Vector2.zero;
+
+        public void OnCollisionStay(Collision collision)
+        {
+            foreach (var contactPoint in collision.contacts)
+            {
+                if (GetIsVectorClose(new Vector3(0, 1, 0), contactPoint.normal, 0.05f))
+                {
+                    _timeRealLastGroundCollision = Time.realtimeSinceStartup;
+                    _currentVelocity.y = Mathf.Clamp(_currentVelocity.y, 0, Mathf.Abs(_currentVelocity.y));
+                }
+
+                if (GetIsVectorClose(new Vector3(1, 0, 0), contactPoint.normal, 0.05f))
+                {
+                    _timeRealLastWallLeftCollision = Time.realtimeSinceStartup;
+                    _currentVelocity.x = Mathf.Clamp(_currentVelocity.x, 0, Mathf.Abs(_currentVelocity.x));
+                }
+
+                if (GetIsVectorClose(new Vector3(-1, 0, 0), contactPoint.normal, 0.05f))
+                {
+                    _timeRealLastWallRightCollision = Time.realtimeSinceStartup;
+                    _currentVelocity.x = Mathf.Clamp(_currentVelocity.x, -Mathf.Abs(_currentVelocity.x), 0);
+                }
+
+                if (GetIsVectorClose(Vector3.down, contactPoint.normal, 0.05f))
+                    _currentVelocity.y = Mathf.Clamp(_currentVelocity.y, -Mathf.Abs(_currentVelocity.y), 0);
+            }
+        }
+
+        private bool GetIsVectorClose(Vector3 vectorA, Vector3 vectorB, float error)
+        {
+            if (Vector3.Distance(vectorA, vectorB) < error && Vector3.Distance(vectorA, vectorB) > -error)
+                return true;
+            return false;
+        }
+
+        public void OnLifeChanged(int life, Vector3 contactVector)
+        {
+            const float forceEnemyCollision = 15.0f;
+            _currentVelocity = contactVector.normalized * forceEnemyCollision;
+        }
+
+        public void ResetPlayer()
+        {
+            _currentVelocity = Vector2.zero;
         }
     }
 }
