@@ -1,25 +1,34 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
+using Assets.Scripts.Manager;
 using UnityEngine;
-
-public class GameManager : MonoBehaviour
+namespace Manager
 {
-    public Transform SpawnPoint1;
-    public Transform SpawnPoint2;
+    public class GameManager : MonoBehaviour
+    {
+        public GameObject playerPrefab;
 
-    public GameObject playerPrefab;
-
+        public PlayerManager[] players;
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        Instantiate(playerPrefab, SpawnPoint1);
-        Instantiate(playerPrefab, SpawnPoint2);
-    }
+        // Start is called before the first frame update
+        void Start()
+        {
+            SpawnAllPlayers();
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
+        private void SpawnAllPlayers()
+        {
+            for (int i = 0; i < players.Length; i++)
+            {
+                players[i].instance = Instantiate(playerPrefab, players[i].spawnPoint);
+                players[i].playerNumber = i + 1;
+                players[i].Setup();
+            }       
+        }
+
+        private void Update()
+        {
         
+        }
     }
 }
+

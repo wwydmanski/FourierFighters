@@ -160,6 +160,7 @@ MonoBehaviour:
     wallFrictionStrongVelThreshold: -10
     wallFrictionStrong: 22.5
     projectileForce: 1000
+    m_PlayerNumber: 1
     version: 1
 --- !u!114 &6080945155057182790
 MonoBehaviour:

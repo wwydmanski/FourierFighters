@@ -21,7 +21,12 @@ namespace PlayerController
         private float _timeRealLastGroundCollision;
         private float _timeRealLastWallLeftCollision;
         private float _timeRealLastWallRightCollision;
+
+        [HideInInspector] public int playerNumber;
         private Rigidbody Rb { get; set; }
+        private string _movementAxisName;
+        private string _fireButtonName;
+        private string _jumpButtonName;
 
         public Vector3 Velocity => Rb.velocity;
 
@@ -61,6 +66,13 @@ namespace PlayerController
             Rb = GetComponent<Rigidbody>();
             AllRenderers = new List<Renderer>(GetComponentsInChildren<Renderer>(true));
             _signalCaster = GetComponent<SignalCaster>();
+        }
+
+        private void Start()
+        {
+            _movementAxisName = "Horizontal" + playerNumber;
+            _fireButtonName = "Fire" + playerNumber;
+            _jumpButtonName = "Jump" + playerNumber;
         }
 
         // Update is called once per frame
@@ -116,9 +128,9 @@ namespace PlayerController
 
         private void ProcessInput()
         {
-            var isKeyDownJump = Input.GetButton("Jump");
-            var isKeyDownAttack = Input.GetButton("Fire1");
-            var inputAxisX = Input.GetAxisRaw("Horizontal");
+            var isKeyDownJump = Input.GetButton(_jumpButtonName);
+            var isKeyDownAttack = Input.GetButton(_fireButtonName);
+            var inputAxisX = Input.GetAxisRaw(_movementAxisName);
             var isKeyDownLeft = inputAxisX < -0.5f;
             var isKeyDownRight = inputAxisX > 0.5f;
 

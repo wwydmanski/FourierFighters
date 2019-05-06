@@ -640,10 +640,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eeefa04e4e840646859eda7aafa42ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpawnPoint1: {fileID: 1648530909}
-  SpawnPoint2: {fileID: 896453402}
   playerPrefab: {fileID: 6199302104986134352, guid: a6357139cf8f3c141b7b167418fd50f9,
     type: 3}
+  players:
+  - playerNumber: 0
+    instance: {fileID: 0}
+    spawnPoint: {fileID: 1648530909}
+  - playerNumber: 0
+    instance: {fileID: 0}
+    spawnPoint: {fileID: 896453402}
 --- !u!4 &419196566
 Transform:
   m_ObjectHideFlags: 0
