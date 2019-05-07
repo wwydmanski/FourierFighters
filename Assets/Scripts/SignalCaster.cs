@@ -19,7 +19,6 @@ namespace Assets.Scripts
         private float _lastRotation;
         private float _offsetMult = 1;
         private float _y_offset = 0.3f;
-        private Random _random = new Random();
 
         // ReSharper disable once UnusedMember.Local
         private void Start()
@@ -46,7 +45,7 @@ namespace Assets.Scripts
                     Debug.DrawRay(_transform.position, _direction,
                         Color.yellow, 0.5f);
 
-                    StartCoroutine(Cast(_random.Next(1, 3)*20, 0, _direction, _random.Next(2)==1));
+                    StartCoroutine(Cast((float) (Math.Round(UnityEngine.Random.value*2)*20), 0, _direction, UnityEngine.Random.value>0.5));
                 }
             }
         }
