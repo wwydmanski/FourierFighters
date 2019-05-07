@@ -25,10 +25,11 @@ namespace Assets.Scripts.Equations
             this._amplitude = freq / CalibrationFreq;
         }
 
-        public override Vector3 GetPosition(int frame)
+        public override Vector3 GetPosition(int frame, float offset)
         {
+            Debug.Log(offset);
             var x = frame * speed;
-            var y = (float)(_displayAmplitudeCoeff*_amplitude * Math.Sin(x * Freq * Math.PI / freqReduction));
+            var y = (float)(_displayAmplitudeCoeff*_amplitude * Math.Sin(offset - x * Freq * Math.PI / freqReduction));
 
             return new Vector3(x, y);
         }

@@ -24,6 +24,9 @@ namespace Assets.Scripts.Projectiles
         public abstract void Die();
         public Guid Uuid;
 
+        private float _offset;
+        public Color Color;
+
         void Start()
         {
             Equation = new SinusEquation();
@@ -32,13 +35,19 @@ namespace Assets.Scripts.Projectiles
             Transform = GetComponent<Transform>();
             Origin = transform.position;
             Uuid = Guid.NewGuid();
+
+
+            GetComponentInChildren<TrailRenderer>().startColor = Color;
+            GetComponentInChildren<TrailRenderer>().endColor = Color;
+
+            _offset = (float) (UnityEngine.Random.value*Math.PI);
         }
 
         void Update()
         {
             if (Alive)
             {
-                var calculatedPosition = Equation.GetPosition(Frame);
+                var calculatedPosition = Equation.GetPosition(Frame, _offset);
                 var newPosition = new Vector3
                 {
                     x = calculatedPosition.x * Direction.x + calculatedPosition.y * Direction.y,
@@ -48,7 +57,7 @@ namespace Assets.Scripts.Projectiles
                 Transform.position = Origin +  newPosition;
 
                 Transform.rotation =
-                    Quaternion.AngleAxis(Equation.GetDerivative(Frame) * 45, Vector3.forward);
+                    Quaternion.AngleAxis(Equation.GetDerivative(Frame, _offset) * 45, Vector3.forward);
             }
         }
 

@@ -19,6 +19,8 @@ namespace Assets.Scripts
         private float _lastRotation;
         private float _offsetMult = 1;
         private float _y_offset = 0.3f;
+        public Color CasterColor;
+
 
         // ReSharper disable once UnusedMember.Local
         private void Start()
@@ -30,6 +32,9 @@ namespace Assets.Scripts
             //CastRight(30, true, 0);
             _lastRotation = Time.time;
             _offsetMult = GetComponent<Collider>().bounds.size.magnitude;
+
+            CasterColor = UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+            this.GetComponent<Renderer>().material.color = CasterColor;
         }
 
         // ReSharper disable once UnusedMember.Local
@@ -82,6 +87,7 @@ namespace Assets.Scripts
             var offset = direction*_offsetMult;
             offset.y += _y_offset;
             _currentProjectile = Instantiate(Projectile, transform.position + offset, Quaternion.identity).GetComponent<Projectile>();
+            _currentProjectile.Color = Color.Lerp( CasterColor, UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 0.1f);
 
             if (exploding)
                 _currentProjectile = _currentProjectile.ChangeType<ExplodingProjectile>();

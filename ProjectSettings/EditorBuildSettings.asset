@@ -8,7 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
     path: Assets/Scenes/Nowa.unity
-    guid: 32e76a4587bb47c4d887174169d6512f
+    guid: f34a1ee077f6367479bb119b4d7dc1bf
   m_configObjects: {}
