@@ -84,8 +84,10 @@ namespace Assets.Scripts
             offset.y += _y_offset;
             _currentProjectile = Instantiate(Projectile, transform.position + offset, Quaternion.identity).GetComponent<Projectile>();
 
-            if(exploding)
+            if (exploding)
                 _currentProjectile = _currentProjectile.ChangeType<ExplodingProjectile>();
+            else
+                _currentProjectile.GetComponent<ParticleSystem>().Stop();
 
             yield return new WaitForSecondsRealtime(0.01f);
             _currentProjectile.SetEquation(new SinusEquation(freq));

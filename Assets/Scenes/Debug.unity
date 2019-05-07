@@ -2130,7 +2130,7 @@ MonoBehaviour:
     type: 3}
   ExplosionEffect: {fileID: 7164360731095726891, guid: bb93816ef08bada4db539c2f75a9810d,
     type: 3}
-  Rotating: 0
+  Rotating: 1
 --- !u!1 &548004107
 GameObject:
   m_ObjectHideFlags: 0
@@ -6537,7 +6537,7 @@ MonoBehaviour:
     type: 3}
   ExplosionEffect: {fileID: 7164360731095726891, guid: bb93816ef08bada4db539c2f75a9810d,
     type: 3}
-  Rotating: 0
+  Rotating: 1
 --- !u!135 &1792362984
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -7183,7 +7183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cab7c13f3a35f44b855f474262d7d8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BandStart: 50
+  BandStart: 40
   Attenuation: 10
 --- !u!65 &1864539077
 BoxCollider:
