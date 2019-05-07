@@ -297,12 +297,12 @@ namespace PlayerController
                 {
                     if (_faceRight)
                     {
-                        _signalCaster.CastRight(30, true, 0);
+                        _signalCaster.CastRight(30, false, 0);
                         print("Right");
                     }
                     else if (!_faceRight)
                     {
-                        _signalCaster.CastLeft(30, true, 0);
+                        _signalCaster.CastLeft(30, false, 0);
                         print("Left");
                     }
 

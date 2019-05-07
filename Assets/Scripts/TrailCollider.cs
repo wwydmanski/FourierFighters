@@ -51,7 +51,7 @@ namespace Assets.Scripts
             handler.Assign(transform.parent.gameObject);
 
             _cube.transform.position = gameObject.transform.position;
-            _cube.transform.localScale = new Vector3(1,1,1);
+            _cube.transform.localScale = new Vector3(1,1,0.1f);
         }
 
         void Update()

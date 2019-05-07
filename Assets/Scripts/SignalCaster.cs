@@ -3,6 +3,7 @@ using System.Collections;
 using Assets.Scripts.Equations;
 using Assets.Scripts.Projectiles;
 using UnityEngine;
+using Random = System.Random;
 
 namespace Assets.Scripts
 {
@@ -18,6 +19,7 @@ namespace Assets.Scripts
         private float _lastRotation;
         private float _offsetMult = 1;
         private float _y_offset = 0.3f;
+        private Random _random = new Random();
 
         // ReSharper disable once UnusedMember.Local
         private void Start()
@@ -44,7 +46,7 @@ namespace Assets.Scripts
                     Debug.DrawRay(_transform.position, _direction,
                         Color.yellow, 0.5f);
 
-                    StartCoroutine(Cast(20, 0, _direction, false));
+                    StartCoroutine(Cast(_random.Next(1, 3)*20, 0, _direction, _random.Next(2)==1));
                 }
             }
         }
