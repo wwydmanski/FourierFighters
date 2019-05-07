@@ -4,6 +4,6 @@ namespace PlayerController
 {
     public class PhysicsParamsContainer : MonoBehaviour {
 
-        public PhysicsParams physicsParams;
+        public PhysicsParams PhysicsParams;
     }
 }

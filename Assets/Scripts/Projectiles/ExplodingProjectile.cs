@@ -66,7 +66,7 @@ namespace Assets.Scripts.Projectiles
 
         public void Explode(float realRadius, float energy)
         {
-            DrawRadius(realRadius);
+            //DrawRadius(realRadius);
 
             Collider[] colliders = Physics.OverlapSphere(_transform.position, realRadius);
             ApplyForce(colliders, _transform.position, realRadius, energy);
@@ -101,9 +101,14 @@ namespace Assets.Scripts.Projectiles
                 var rb = hit.GetComponent<Rigidbody>();
                 if (rb != null && !ObstructionHelper.WallObstruction(_transform.position, hit.transform.position))
                     {
+                        var controller = hit.gameObject.GetComponent<PlayerController.PlayerController>();
+                        if (controller != null)
+                            controller.AddExplosionForce(energy * 10, explosionPos, realRadius);
+                        else
+                            rb.AddExplosionForce(energy * 10, explosionPos, realRadius);
+
                         Debug.DrawLine(_transform.position, hit.transform.position, Color.red, 1);
-                        rb.AddExplosionForce(energy * 10, explosionPos, realRadius);
-                    }
+                }
             }
         }
     }

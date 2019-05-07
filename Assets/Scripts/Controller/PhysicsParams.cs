@@ -6,36 +6,36 @@ namespace PlayerController {
     [System.Serializable]
     public class PhysicsParams {
 
-        public float playerMass = 1f;
-        public float gameGravity = -40f;
-        public float jumpUpForce = 0.25f;
-        public float jumpUpVel = 18.75f;
+        public float PlayerMass = 1f;
+        public float GameGravity2 = -40f;
+        public float JumpUpForce = 0.25f;
+        public float JumpUpVel = 18.75f;
         [Tooltip("Additional gravity for jumping in case we're not holding down the jump button. Supposed to act as a penalty.")]
-        public float jumpGravity = -22.5f;
-        public float jumpWallVelVertical = 12;
-        public float jumpWallVelHorizontal = 7.5f;
+        public float JumpGravity = -22.5f;
+        public float JumpWallVelVertical = 12;
+        public float JumpWallVelHorizontal = 7.5f;
         [Tooltip("Maximum velocity sideways.")]
-        public float inAirMaxVelHorizontal = 27.5f;
+        public float InAirMaxVelHorizontal = 27.5f;
         [Tooltip("The force that acts when the players moves sideways in air.")]
-        public float inAirMoveHorizontalForce = 12.5f;
+        public float InAirMoveHorizontalForce = 12.5f;
         [Tooltip("The force that acts when the player is moving in one direction, but steering into the other.")]
-        public float inAirMoveHorizontalForceReverse = 28.75f;
-        public float onGroundMaxVelHorizontal = 25;
-        public float onGroundMoveHorizontalForce = 20;
-        public float onGroundMoveHorizontalForceReverse = 45;
-        public float groundFriction = 35;
+        public float InAirMoveHorizontalForceReverse = 28.75f;
+        public float OnGroundMaxVelHorizontal = 25;
+        public float OnGroundMoveHorizontalForce = 20;
+        public float OnGroundMoveHorizontalForceReverse = 45;
+        public float GroundFriction = 35;
         [Tooltip("When velocity is lower than this value the player stops completely.")]
-        public float groundFrictionEpsilon = 0.75f;
-        public float wallFriction = 11.25f;
-        public float wallFrictionStrongVelThreshold = -10;
+        public float GroundFrictionEpsilon = 0.75f;
+        public float WallFriction = 11.25f;
+        public float WallFrictionStrongVelThreshold = -10;
         [Tooltip("Gets applied when moving down along the wall too fast.")]
-        public float wallFrictionStrong = 22.5f;
+        public float WallFrictionStrong = 22.5f;
 
-        public float projectileForce = 1000;
-
+        public float ProjectileForce = 1000;
+        public float ExplosionForce = 30;
         #region serialization version
         [HideInInspector]
-        public int version = 1;
+        public int Version = 1;
         #endregion
     }
 }

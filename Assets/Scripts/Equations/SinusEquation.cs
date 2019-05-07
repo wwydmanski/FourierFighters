@@ -11,7 +11,7 @@ namespace Assets.Scripts.Equations
         //public float freq = 60;
         private float speed = 0.3f;
 
-        private float freqReduction = 20;
+        private float freqReduction = 40;
         private float energyMultiplier = 40;
 
         public SinusEquation()

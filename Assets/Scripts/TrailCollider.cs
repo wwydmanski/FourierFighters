@@ -46,7 +46,7 @@ namespace Assets.Scripts
             _cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
             _cube.GetComponent<BoxCollider>().isTrigger = true;
             _cube.GetComponent<Renderer>().material = Resources.Load("UCLAGameLab/Wireframe/Materials/Wireframe", typeof(Material)) as Material;
-            _cube.GetComponent<Renderer>().enabled = false;
+            //_cube.GetComponent<Renderer>().enabled = false;
             TailColliderHandler handler = _cube.AddComponent<TailColliderHandler>();
             handler.Assign(transform.parent.gameObject);
 
@@ -77,12 +77,12 @@ namespace Assets.Scripts
             var minY = TakeLast(positions, positions.Count / 2).Min(vertex => vertex.y);
 
             var size = _cube.transform.lossyScale;
-            size.x = (maxX - minX)/2;
+            size.x = (maxX - minX)/5;
             size.y = (maxY - minY);
             size.z = 0.5f;
 
             transformPosition = gameObject.transform.position;
-            transformPosition.x += (size.x / 2) * Math.Sign(positions[0].x - positions[1].x);
+            transformPosition.x += (size.x / 5) * Math.Sign(positions[0].x - positions[1].x);
             transformPosition.y = (maxY + minY) / 2;
             return size;
         }

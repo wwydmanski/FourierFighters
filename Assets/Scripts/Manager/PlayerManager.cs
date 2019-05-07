@@ -16,7 +16,7 @@ namespace Assets.Scripts.Manager
     public void Setup()
     {
         _playerController = instance.GetComponent<PlayerController.PlayerController>();
-        _playerController.playerNumber = playerNumber;
+        _playerController.PlayerNumber = playerNumber;
     }
     }
 }

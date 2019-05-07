@@ -32,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 6199302104986134352}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.48735, y: 0.48735, z: 0.48735}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -140,28 +140,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d4d2a3a469dea843a4769af37baa14f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerNumber: 0
   <PhysicsParams>k__BackingField:
-    playerMass: 1
-    gameGravity: -40
-    jumpUpForce: 28.29
-    jumpUpVel: 18.75
-    jumpGravity: -22.5
-    jumpWallVelVertical: 12
-    jumpWallVelHorizontal: 7.5
-    inAirMaxVelHorizontal: 27.5
-    inAirMoveHorizontalForce: 12.5
-    inAirMoveHorizontalForceReverse: 28.75
-    onGroundMaxVelHorizontal: 25
-    onGroundMoveHorizontalForce: 20
-    onGroundMoveHorizontalForceReverse: 45
-    groundFriction: 35
-    groundFrictionEpsilon: 0.75
-    wallFriction: 11.25
-    wallFrictionStrongVelThreshold: -10
-    wallFrictionStrong: 22.5
-    projectileForce: 1000
-    m_PlayerNumber: 1
-    version: 1
+    PlayerMass: 1
+    GameGravity: 40
+    JumpUpForce: 0.5
+    JumpUpVel: 18.75
+    JumpGravity: -22.5
+    JumpWallVelVertical: 12
+    JumpWallVelHorizontal: 7.5
+    InAirMaxVelHorizontal: 27.5
+    InAirMoveHorizontalForce: 12.5
+    InAirMoveHorizontalForceReverse: 28.75
+    OnGroundMaxVelHorizontal: 25
+    OnGroundMoveHorizontalForce: 20
+    OnGroundMoveHorizontalForceReverse: 45
+    GroundFriction: 35
+    GroundFrictionEpsilon: 0.75
+    WallFriction: 11.25
+    WallFrictionStrongVelThreshold: -10
+    WallFrictionStrong: 22.5
+    ProjectileForce: 1000
+    ExplosionForce: 30
+    Version: 1
 --- !u!114 &6080945155057182790
 MonoBehaviour:
   m_ObjectHideFlags: 0
