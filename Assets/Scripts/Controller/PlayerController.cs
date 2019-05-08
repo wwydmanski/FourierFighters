@@ -108,10 +108,11 @@ namespace PlayerController
         public void AddExplosionForce(float energy, Vector3 explosionPos, float radius)
         {
             Vector3 dir = Rb.position - explosionPos;
-            Vector3 force = dir.normalized*energy / (float)dir.magnitude;
+            Vector3 force = dir.normalized*energy / dir.magnitude;
             var forceGravity = force.y + PhysicsParams.GameGravity2;
             force.y = forceGravity > 0 ? forceGravity : 0;
             CurrentForce += force*PhysicsParams.ExplosionForce;
+            CurrentForce += Vector3.up * PhysicsParams.ExplosionForce*30;
             ComputeVelocity(Time.deltaTime);
         }
 
@@ -297,12 +298,12 @@ namespace PlayerController
                 {
                     if (_faceRight)
                     {
-                        _signalCaster.CastRight(30, false, 0);
+                        _signalCaster.CastRight(30, true, 0);
                         print("Right");
                     }
                     else if (!_faceRight)
                     {
-                        _signalCaster.CastLeft(30, false, 0);
+                        _signalCaster.CastLeft(30, true, 0);
                         print("Left");
                     }
 

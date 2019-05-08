@@ -18,7 +18,7 @@ namespace Assets.Scripts.Projectiles
 
         protected Transform Transform;
         protected int Frame;
-        protected float TimeLeft = 500;
+        protected float TimeLeft = 100;
         protected GameObject ExplosionEffect;
 
         public int CollisionPriority = -1;

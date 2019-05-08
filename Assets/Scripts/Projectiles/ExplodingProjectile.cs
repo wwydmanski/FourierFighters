@@ -7,7 +7,7 @@ namespace Assets.Scripts.Projectiles
         private const float RadiusBase = 15;
         private LineRenderer _lineDrawer;
         private Color? _explosionColor;
-        private float _explosionPower = 1;
+        private float _particlePower = 1;
 
         protected void Start()
         {
@@ -33,7 +33,7 @@ namespace Assets.Scripts.Projectiles
                     if (colliderProjectile is ExplodingProjectile explodingProjectile)
                     {
                         explodingProjectile.Die(false);
-                        _explosionPower = 2;
+                        _particlePower = 2;
                     }
                     else
                         colliderProjectile.Die();
@@ -49,7 +49,7 @@ namespace Assets.Scripts.Projectiles
             {
                 _explosionColor = Color.Lerp(Color, collider.Color, 0.5f);
                 if(collider is ExplodingProjectile)
-                    _explosionPower = 2;
+                    _particlePower = 2;
 
                 Die(true);
             }
@@ -75,8 +75,8 @@ namespace Assets.Scripts.Projectiles
                 if (explode)
                 {
                     Color expColor = Color.Lerp(_explosionColor ?? Color, Color.white, 0.5f);
-                    explosion.DrawParticles(ExplosionEffect, Equation.GetEnergy() * _explosionPower, expColor);
-                    explosion.Explode(realRadius, Equation.GetEnergy() * _explosionPower);
+                    explosion.DrawParticles(ExplosionEffect, Equation.GetEnergy() * _particlePower, expColor);
+                    explosion.Explode(realRadius, Equation.GetEnergy() * _particlePower);
                 }
 
                 Destroy();

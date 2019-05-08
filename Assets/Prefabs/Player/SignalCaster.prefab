@@ -112,6 +112,7 @@ MonoBehaviour:
   ExplosionEffect: {fileID: 7164360731095726891, guid: bb93816ef08bada4db539c2f75a9810d,
     type: 3}
   Rotating: 0
+  CasterColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!54 &6199302104986134318
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -142,19 +143,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerNumber: 0
   <PhysicsParams>k__BackingField:
-    PlayerMass: 1
-    GameGravity: 40
-    JumpUpForce: 0.5
-    JumpUpVel: 18.75
-    JumpGravity: -22.5
+    PlayerMass: 2
+    GameGravity2: -40
+    JumpUpForce: 0.25
+    JumpUpVel: 23
+    JumpGravity: -30
     JumpWallVelVertical: 12
     JumpWallVelHorizontal: 7.5
-    InAirMaxVelHorizontal: 27.5
+    InAirMaxVelHorizontal: 15
     InAirMoveHorizontalForce: 12.5
     InAirMoveHorizontalForceReverse: 28.75
-    OnGroundMaxVelHorizontal: 25
-    OnGroundMoveHorizontalForce: 20
-    OnGroundMoveHorizontalForceReverse: 45
+    OnGroundMaxVelHorizontal: 12
+    OnGroundMoveHorizontalForce: 40
+    OnGroundMoveHorizontalForceReverse: 300
     GroundFriction: 35
     GroundFrictionEpsilon: 0.75
     WallFriction: 11.25

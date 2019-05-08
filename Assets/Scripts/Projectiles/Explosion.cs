@@ -68,7 +68,7 @@ namespace Assets.Scripts.Projectiles
                 {
                     var controller = hit.gameObject.GetComponent<PlayerController.PlayerController>();
                     if (controller != null)
-                        controller.AddExplosionForce(energy * 10, explosionPos, realRadius);
+                        controller.AddExplosionForce(energy * 20, explosionPos, realRadius);
                     else
                         rb.AddExplosionForce(energy * 10, explosionPos, realRadius);
 
