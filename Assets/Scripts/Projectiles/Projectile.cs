@@ -19,6 +19,7 @@ namespace Assets.Scripts.Projectiles
         protected Transform Transform;
         protected int Frame;
         protected float TimeLeft = 500;
+        protected GameObject ExplosionEffect;
 
         public bool Alive = true;
         public abstract void Die();
@@ -41,6 +42,8 @@ namespace Assets.Scripts.Projectiles
             GetComponentInChildren<TrailRenderer>().endColor = Color;
 
             _offset = (float) (UnityEngine.Random.value*Math.PI);
+            var main = GetComponent<ParticleSystem>().main;
+            main.startColor = Color.Lerp(Color, Color.white, 0.5f);
         }
 
         void Update()
@@ -109,6 +112,11 @@ namespace Assets.Scripts.Projectiles
             Destroy(GetComponent<Rigidbody>());
             Destroy(GetComponent<ParticleSystem>());
             GetComponentInChildren<TrailCollider>().Destroy();
+        }
+
+        public void AddExplosionEffect(GameObject obj)
+        {
+            ExplosionEffect = obj;
         }
     }
 }

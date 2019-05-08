@@ -21,6 +21,8 @@ class BasicProjectile : Projectile
         {
             Debug.Log(collision.collider.name);
             var colliderProjectile = collision.collider.gameObject.GetComponent<Projectile>();
+            if (colliderProjectile == null)
+                colliderProjectile = collision.collider.gameObject.GetComponentInParent<Projectile>();
 
             var dir = Direction;
             dir.y = Math.Abs(dir.y) < 0.01 ? 100 : dir.y;
@@ -31,6 +33,11 @@ class BasicProjectile : Projectile
             else
                 collision.rigidbody?.AddForce(Direction * this.Equation.GetEnergy() * _energyCoeff,
                 ForceMode.Impulse);
+
+            var explosion = new Explosion(gameObject.AddComponent<LineRenderer>(), transform);
+            if(colliderProjectile != null)
+                explosion.DrawParticles(ExplosionEffect, Equation.GetEnergy(), Color.Lerp(Color, colliderProjectile.Color, 0.5f));
+
             Die();
         }
     }

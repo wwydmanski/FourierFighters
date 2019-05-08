@@ -50,7 +50,7 @@ namespace Assets.Scripts
                     Debug.DrawRay(_transform.position, _direction,
                         Color.yellow, 0.5f);
 
-                    StartCoroutine(Cast((float) (Math.Round(UnityEngine.Random.value*2)*20), 0, _direction, UnityEngine.Random.value>0.5));
+                    StartCoroutine(Cast((float) (Math.Round(UnityEngine.Random.value*1+1)*20), 0, _direction, UnityEngine.Random.value>0.5));
                 }
             }
         }
@@ -87,19 +87,18 @@ namespace Assets.Scripts
             var offset = direction*_offsetMult;
             offset.y += _y_offset;
             _currentProjectile = Instantiate(Projectile, transform.position + offset, Quaternion.identity).GetComponent<Projectile>();
-            _currentProjectile.Color = Color.Lerp( CasterColor, UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 0.1f);
 
             if (exploding)
                 _currentProjectile = _currentProjectile.ChangeType<ExplodingProjectile>();
             else
                 _currentProjectile.GetComponent<ParticleSystem>().Stop();
 
+            _currentProjectile.Color = Color.Lerp(CasterColor, UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 0.2f);
             yield return new WaitForSecondsRealtime(0.01f);
             _currentProjectile.SetEquation(new SinusEquation(freq));
             _currentProjectile.SetDirection(direction);
 
-            if (exploding)
-                (_currentProjectile as ExplodingProjectile)?.AddExplosionEffect(ExplosionEffect);
+            _currentProjectile.AddExplosionEffect(ExplosionEffect);
         }
     }
 }
