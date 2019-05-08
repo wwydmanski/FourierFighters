@@ -26,7 +26,6 @@ public class Filter : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         Projectile proc = other.GetComponent<Projectile>();
-        Debug.Log(other.name);
 
         if (proc != null)
         {

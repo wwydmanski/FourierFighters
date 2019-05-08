@@ -9,12 +9,18 @@ namespace Assets.Scripts.Projectiles
         private Color? _explosionColor;
         private float _explosionPower = 1;
 
+        protected void Start()
+        {
+            base.Start();
+            CollisionPriority = 100;
+        }
+
         // ReSharper disable once UnusedMember.Local
         private void OnCollisionEnter(Collision collision)
         {
             if (Alive)
             {
-                Debug.Log(collision.collider.name);
+                //Debug.Log(collision.collider.name);
                 var colliderProjectile = collision.collider.gameObject.GetComponent<Projectile>();
                 if (colliderProjectile == null)
                     colliderProjectile = collision.collider.gameObject.GetComponentInParent<Projectile>();
@@ -34,6 +40,22 @@ namespace Assets.Scripts.Projectiles
                 }
 
                 Die();
+            }
+        }
+
+        public override void ExternalCollide(Projectile collider, int order)
+        {
+            if (CollisionPriority>collider.CollisionPriority || ((CollisionPriority == collider.CollisionPriority) && order==0))
+            {
+                _explosionColor = Color.Lerp(Color, collider.Color, 0.5f);
+                if(collider is ExplodingProjectile)
+                    _explosionPower = 2;
+
+                Die(true);
+            }
+            else
+            {
+                Die(false);
             }
         }
 

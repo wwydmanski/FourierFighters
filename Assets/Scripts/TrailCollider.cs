@@ -27,8 +27,8 @@ namespace Assets.Scripts
                 var projectile = other.GetComponent<Projectile>();
                 if (projectile.Uuid != parentUuid && projectile.Alive && parentProjectile.Alive)
                 {
-                    parentProjectile.Die();
-                    projectile.Die();
+                    parentProjectile.ExternalCollide(projectile, 0);
+                    projectile.ExternalCollide(parentProjectile, 1);
                 }
             }
         }
@@ -91,7 +91,6 @@ namespace Assets.Scripts
         {
             Destroy(_cube);
             Destroy(this);
-            Debug.Log("Executed");
         }
 
         public static IEnumerable<T> TakeLast<T>(IEnumerable<T> coll, int N)

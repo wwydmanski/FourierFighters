@@ -14,15 +14,24 @@ class BasicProjectile : Projectile
 
     private float _energyCoeff = 1f;
 
+    protected void Start()
+    {
+        base.Start();
+        CollisionPriority = 0;
+    }
+
     // ReSharper disable once UnusedMember.Local
     private void OnCollisionEnter(Collision collision)
     {
         if (Alive)
         {
-            Debug.Log(collision.collider.name);
             var colliderProjectile = collision.collider.gameObject.GetComponent<Projectile>();
             if (colliderProjectile == null)
+            {
+                if(collision.collider.tag!="wall")
+                    Debug.Log(collision.collider.gameObject.name);
                 colliderProjectile = collision.collider.gameObject.GetComponentInParent<Projectile>();
+            }
 
             var dir = Direction;
             dir.y = Math.Abs(dir.y) < 0.01 ? 100 : dir.y;
@@ -34,12 +43,18 @@ class BasicProjectile : Projectile
                 collision.rigidbody?.AddForce(Direction * this.Equation.GetEnergy() * _energyCoeff,
                 ForceMode.Impulse);
 
-            var explosion = new Explosion(gameObject.AddComponent<LineRenderer>(), transform);
-            if(colliderProjectile != null)
-                explosion.DrawParticles(ExplosionEffect, Equation.GetEnergy(), Color.Lerp(Color, colliderProjectile.Color, 0.5f));
+            Explode(colliderProjectile);
 
             Die();
         }
+    }
+
+    private void Explode(Projectile colliderProjectile)
+    {
+        var explosion = new Explosion(gameObject.AddComponent<LineRenderer>(), transform);
+        if (colliderProjectile != null)
+            explosion.DrawParticles(ExplosionEffect, Equation.GetEnergy(),
+                Color.Lerp(Color, colliderProjectile.Color, 0.5f));
     }
 
     public override void Die()
@@ -48,5 +63,12 @@ class BasicProjectile : Projectile
         {
             Destroy();
         }
+    }
+
+    public override void ExternalCollide(Projectile collider, int order)
+    {
+        if (CollisionPriority > collider.CollisionPriority || ((CollisionPriority == collider.CollisionPriority) && order == 0))
+            Explode(collider.GetComponent<Projectile>());
+        Die();
     }
 }

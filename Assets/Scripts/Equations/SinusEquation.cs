@@ -27,7 +27,6 @@ namespace Assets.Scripts.Equations
 
         public override Vector3 GetPosition(int frame, float offset)
         {
-            Debug.Log(offset);
             var x = frame * speed;
             var y = (float)(_displayAmplitudeCoeff*_amplitude * Math.Sin(offset - x * Freq * Math.PI / freqReduction));
 

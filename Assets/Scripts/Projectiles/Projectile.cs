@@ -21,14 +21,17 @@ namespace Assets.Scripts.Projectiles
         protected float TimeLeft = 500;
         protected GameObject ExplosionEffect;
 
+        public int CollisionPriority = -1;
         public bool Alive = true;
         public abstract void Die();
+        public abstract void ExternalCollide(Projectile collider, int order);
+
         public Guid Uuid;
 
         private float _offset;
         public Color Color;
 
-        void Start()
+        protected void Start()
         {
             Equation = new SinusEquation();
             gameObject.tag = "projectile";
@@ -78,13 +81,11 @@ namespace Assets.Scripts.Projectiles
         public void SetEquation(Equation eq)
         {
             Equation = eq;
-            Debug.Log("Changed equation");
         }
 
         public void SetDirection(Vector3 direction)
         {
             Direction = direction;
-            Debug.Log($"Direction: {Direction.x}");
         }
 
         public Equation GetEquation()
