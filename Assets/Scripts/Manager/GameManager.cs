@@ -19,8 +19,8 @@ namespace Manager
             _playerColors = new Color[4];
 
             _playerColors[0] = Color.yellow;
-            _playerColors[1] = Color.green;
-            _playerColors[2] = Color.red;
+            _playerColors[1] = Color.red;
+            _playerColors[2] = Color.green;
             _playerColors[3] = Color.blue;
             SpawnAllPlayers();
         }
