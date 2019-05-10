@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 6080945155057182790}
   m_Layer: 0
   m_Name: SignalCaster
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -162,7 +162,7 @@ MonoBehaviour:
     WallFrictionStrongVelThreshold: -10
     WallFrictionStrong: 22.5
     ProjectileForce: 1000
-    ExplosionForce: 30
+    ExplosionForce: 50
     Version: 1
 --- !u!114 &6080945155057182790
 MonoBehaviour:

@@ -31,6 +31,10 @@ namespace Assets.Scripts
                     projectile.ExternalCollide(parentProjectile, 1);
                 }
             }
+            else if (other.tag == "Player")
+            {
+
+            }
         }
     }
 

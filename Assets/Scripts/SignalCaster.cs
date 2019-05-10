@@ -33,7 +33,12 @@ namespace Assets.Scripts
             _lastRotation = Time.time;
             _offsetMult = GetComponent<Collider>().bounds.size.magnitude;
 
-            CasterColor = UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+            SetColor(UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f));
+        }
+
+        public void SetColor(Color color)
+        {
+            CasterColor = color;
             this.GetComponent<Renderer>().material.color = CasterColor;
         }
 

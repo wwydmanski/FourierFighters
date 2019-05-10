@@ -70,7 +70,7 @@ namespace Assets.Scripts.Projectiles
                     if (controller != null)
                         controller.AddExplosionForce(energy * 20, explosionPos, realRadius);
                     else
-                        rb.AddExplosionForce(energy * 10, explosionPos, realRadius);
+                        rb.AddExplosionForce(energy * 50, explosionPos, realRadius);
 
                     Debug.DrawLine(_transform.position, hit.transform.position, Color.red, 1);
                 }

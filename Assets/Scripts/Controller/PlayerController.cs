@@ -112,7 +112,7 @@ namespace PlayerController
             var forceGravity = force.y + PhysicsParams.GameGravity2;
             force.y = forceGravity > 0 ? forceGravity : 0;
             CurrentForce += force*PhysicsParams.ExplosionForce;
-            CurrentForce += Vector3.up * PhysicsParams.ExplosionForce*30;
+            CurrentForce += Vector3.up * PhysicsParams.ExplosionForce*15;
             ComputeVelocity(Time.deltaTime);
         }
 
