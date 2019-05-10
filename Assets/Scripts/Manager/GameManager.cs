@@ -7,32 +7,33 @@ namespace Manager
 {
     public class GameManager : MonoBehaviour
     {
-        public GameObject playerPrefab;
+        public GameObject PlayerPrefab;
 
-        public PlayerManager[] players;
+        public PlayerManager[] Players;
 
-        private Color[] playerColors;
+        private Color[] _playerColors;
 
         // Start is called before the first frame update
         void Start()
         {
-            playerColors = new Color[4];
+            _playerColors = new Color[4];
 
-            playerColors[0] = Color.yellow;
-            playerColors[1] = Color.green;
-            playerColors[2] = Color.red;
-            playerColors[3] = Color.blue;
+            _playerColors[0] = Color.yellow;
+            _playerColors[1] = Color.green;
+            _playerColors[2] = Color.red;
+            _playerColors[3] = Color.blue;
             SpawnAllPlayers();
         }
 
         private void SpawnAllPlayers()
         {
-            for (int i = 0; i < players.Length; i++)
+            for (int i = 0; i < Players.Length; i++)
             {
-                players[i].instance = Instantiate(playerPrefab, players[i].spawnPoint);
-                players[i].playerNumber = i + 1;
-                players[i].Setup();
-                StartCoroutine(SetPlayerColor(players[i].instance, playerColors[i]));
+                Players[i].instance = Instantiate(PlayerPrefab, Players[i].spawnPoint);
+                Players[i].playerNumber = i + 1;
+                Players[i].Setup();
+                Players[i].instance.name = $"Player {i + 1}";
+                StartCoroutine(SetPlayerColor(Players[i].instance, _playerColors[i]));
             }
         }
 
