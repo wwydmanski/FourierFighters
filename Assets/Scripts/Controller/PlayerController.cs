@@ -29,6 +29,8 @@ namespace PlayerController
         private string _fireButtonName;
         private string _jumpButtonName;
 
+        public GameObject AntennaIcon;
+
         public Vector3 Velocity => Rb.velocity;
 
         public Vector3 VelocityRelativeGround => Velocity / PhysicsParams.OnGroundMaxVelHorizontal;
@@ -74,6 +76,8 @@ namespace PlayerController
             _movementAxisName = "Horizontal" + PlayerNumber;
             _fireButtonName = "Fire" + PlayerNumber;
             _jumpButtonName = "Jump" + PlayerNumber;
+
+            Debug.Log(AntennaIcon);
         }
 
         // Update is called once per frame

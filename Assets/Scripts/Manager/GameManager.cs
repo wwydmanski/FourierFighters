@@ -33,6 +33,8 @@ namespace Manager
                 Players[i].playerNumber = i + 1;
                 Players[i].Setup();
                 Players[i].instance.name = $"Player {i + 1}";
+                Players[i].instance.GetComponent<PlayerController.PlayerController>().AntennaIcon = GameObject.Find($"Antenna{i+1}");
+
                 StartCoroutine(SetPlayerColor(Players[i].instance, _playerColors[i]));
             }
         }
