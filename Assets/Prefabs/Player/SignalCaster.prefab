@@ -142,6 +142,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerNumber: 0
+  AntennaIcon: {fileID: 0}
   <PhysicsParams>k__BackingField:
     PlayerMass: 2
     GameGravity2: -40
@@ -177,4 +178,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deathTag: Death
-  sceneName: Nowa
+  sceneName: Menu
