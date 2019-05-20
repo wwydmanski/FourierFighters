@@ -9,7 +9,7 @@ namespace Assets.Scripts.Projectiles
         private Color? _explosionColor;
         private float _particlePower = 1;
 
-        protected void Start()
+        protected new void Start()
         {
             base.Start();
             CollisionPriority = 100;

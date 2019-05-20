@@ -4,23 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Scripts.Controller
 {
-    class AntennaIconManager
+    class AntennaIconManager : MonoBehaviour
     {
-        private GameObject BaseIcon;
+        private Image[] _bars;
 
-        public AntennaIconManager(GameObject baseIcon)
+        public void SetBars(Image[] Bars)
         {
-            BaseIcon = baseIcon;
+            _bars = Bars;
         }
 
         public void UpdateIcon(int powerLeft)
         {
-            Texture2D wave = new Texture2D(100, 100);
-            wave.SetPixels(0, 0, 100, 100, new[] {Color.red});
-            wave.Apply();
+            for (int i = 0; i < powerLeft+1; i++) _bars[i].enabled = true;
+            for (int i = powerLeft+1; i < _bars.Length; i++) _bars[i].enabled = false;
         }
     }
 }

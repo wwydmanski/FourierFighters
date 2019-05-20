@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts;
+using Assets.Scripts.Controller;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace PlayerController
 {
@@ -53,6 +56,9 @@ namespace PlayerController
 
         public List<Renderer> AllRenderers { get; private set; }
 
+        private int _energyLeft=3;
+        private float lastShotTime;
+
         public Vector3 Position
         {
             get => transform.position;
@@ -77,7 +83,9 @@ namespace PlayerController
             _fireButtonName = "Fire" + PlayerNumber;
             _jumpButtonName = "Jump" + PlayerNumber;
 
-            Debug.Log(AntennaIcon);
+            GetComponent<AntennaIconManager>().SetBars(AntennaIcon.GetComponentsInChildren<Image>());
+            //InvokeRepeating("IncreaseEnergy", 0.5f, 0.5f);
+            StartCoroutine(IncreaseEnergy());
         }
 
         // Update is called once per frame
@@ -96,6 +104,28 @@ namespace PlayerController
             //collision detection with static world
             IsOnWall = IsOnWallLeft || IsOnWallRight;
             IsInAir = IsOnGround == false;
+
+            GetComponent<AntennaIconManager>().UpdateIcon(_energyLeft);
+        }
+
+        private IEnumerator IncreaseEnergy()
+        {
+            float lastUpdateTime = Time.time;
+            for (;;)
+            {
+                yield return new WaitForSeconds(0.1f);
+
+                var time = Time.time;
+                if (time - lastUpdateTime >= PhysicsParams.EnergyRechargeRate && time - lastShotTime >= PhysicsParams.EnergyRechargeShotDelay)
+                {
+                    if(_energyLeft==0)
+                        if(time-lastShotTime < PhysicsParams.FullDischargeDelay)
+                            continue;
+
+                    _energyLeft = Math.Min(_energyLeft + 1, 5);
+                    lastUpdateTime = time;
+                }
+            }
         }
 
         private void SimResetForce()
@@ -149,60 +179,24 @@ namespace PlayerController
             var isKeyDownLeft = inputAxisX < -0.5f;
             var isKeyDownRight = inputAxisX > 0.5f;
 
-            //-----------------
             //JUMPING LOGIC:
-            //player is on ground
-            if (IsInAir == false)
-            {
-                //in case the player is on ground and does not press the jump key, he
-                //should be allowed to jump
-                if (isKeyDownJump == false) _keyJumpRetrigger = true;
+            if (!IsInAir) JumpOnGround(isKeyDownJump);
+            else if (IsOnWall) MoveOnWall(isKeyDownJump);
+            HandleJumping(isKeyDownJump);
 
-                //did player press down the jump button?
-                if (isKeyDownJump && _keyJumpRetrigger)
-                {
-                    _keyJumpPressed = true;
-                    _keyJumpRetrigger = false;
+            //IN AIR SIDEWAYS:
+            if (IsInAir) MoveInAir(isKeyDownLeft, isKeyDownRight);
 
-                    //when pressing jump on ground we set the upwards velocity directly
-                    _currentVelocity = new Vector3(_currentVelocity.x, PhysicsParams.JumpUpVel, 0);
-                }
-            }
-            else if (IsOnWall)
-            {
-                //let's allow jumping again in case of being on the wall
-                if (isKeyDownJump == false) _keyJumpRetrigger = true;
-                if (_currentVelocity.y < 0) SimAddForce(new Vector3(0, PhysicsParams.WallFriction, 0) * EntityMass);
-                if (_currentVelocity.y < PhysicsParams.WallFrictionStrongVelThreshold)
-                    SimAddForce(new Vector3(0, PhysicsParams.WallFrictionStrong, 0) * EntityMass);
-                if (isKeyDownJump && _keyJumpRetrigger)
-                {
-                    _keyJumpPressed = true;
-                    _keyJumpRetrigger = false;
+            //ON GROUND SIDEWAYS:
+            if (!IsInAir) MoveOnGround(isKeyDownLeft, isKeyDownRight);
 
-                    //in case we are moving down -> let's set the velocity directly
-                    //in case we are moving up -> sum up velocity
-                    if (IsOnWallLeft)
-                    {
-                        if (_currentVelocity.y <= 0)
-                            _currentVelocity = new Vector3(PhysicsParams.JumpWallVelHorizontal,
-                                PhysicsParams.JumpWallVelVertical, 0);
-                        else
-                            _currentVelocity = new Vector3(PhysicsParams.JumpWallVelHorizontal,
-                                _currentVelocity.y + PhysicsParams.JumpWallVelVertical, 0);
-                    }
-                    else if (IsOnWallRight)
-                    {
-                        if (_currentVelocity.y <= 0)
-                            _currentVelocity = new Vector3(-PhysicsParams.JumpWallVelHorizontal,
-                                PhysicsParams.JumpWallVelVertical, 0);
-                        else
-                            _currentVelocity = new Vector3(-PhysicsParams.JumpWallVelHorizontal,
-                                _currentVelocity.y + PhysicsParams.JumpWallVelVertical, 0);
-                    }
-                }
-            }
+            //PLAYER ATTACK
+            if (isKeyDownAttack) Attack();
+            else _shot = false;
+        }
 
+        private void HandleJumping(bool isKeyDownJump)
+        {
             //did player lift the jump button?
             if (isKeyDownJump == false) _keyJumpPressed = false;
 
@@ -213,110 +207,145 @@ namespace PlayerController
 
             //let's apply additional gravity in case we're in air moving up but not holding the jump button
             if (_currentVelocity.y > 0) SimAddForce(new Vector3(0, PhysicsParams.JumpGravity, 0) * EntityMass);
+        }
 
-            //-----------------
-            //IN AIR SIDEWAYS:
-            if (IsInAir)
+        private void Attack()
+        {
+            if (!_shot && _energyLeft > 0)
             {
-                //steering into moving direction (slow accel)
-                if (isKeyDownLeft && _currentVelocity.x <= 0)
-                {
-                    _faceRight = false;
-                    SimAddForce(new Vector3(-PhysicsParams.InAirMoveHorizontalForce, 0, 0) * EntityMass);
-                }
-                else if (isKeyDownRight && _currentVelocity.x >= 0)
-                {
-                    _faceRight = true;
-                    SimAddForce(new Vector3(PhysicsParams.InAirMoveHorizontalForce, 0, 0) * EntityMass);
-                }
-                //steering against moving direction (fast reverse accel)
-                else if (isKeyDownLeft && _currentVelocity.x >= 0)
-                {
-                    _faceRight = false;
-                    SimAddForce(new Vector3(-PhysicsParams.InAirMoveHorizontalForceReverse, 0, 0) * EntityMass);
-                }
-                else if (isKeyDownRight && _currentVelocity.x <= 0)
-                {
-                    _faceRight = true;
-                    SimAddForce(new Vector3(PhysicsParams.InAirMoveHorizontalForceReverse, 0, 0) * EntityMass);
-                }
+                if (_faceRight) _signalCaster.CastRight(30, true, 0);
+                else if (!_faceRight) _signalCaster.CastLeft(30, true, 0);
+
+                _energyLeft -= 1;
+                _shot = true;
+                lastShotTime = Time.time;
+            }
+        }
+
+        private void MoveOnGround(bool isKeyDownLeft, bool isKeyDownRight)
+        {
+            //steering into moving direction (slow accel)
+            if (isKeyDownLeft && _currentVelocity.x <= 0)
+            {
+                _faceRight = false;
+                SimAddForce(new Vector3(-PhysicsParams.OnGroundMoveHorizontalForce, 0, 0) * EntityMass);
+            }
+            else if (isKeyDownRight && _currentVelocity.x >= 0)
+            {
+                _faceRight = true;
+                SimAddForce(new Vector3(PhysicsParams.OnGroundMoveHorizontalForce, 0) * EntityMass);
+            }
+            //steering against moving direction (fast reverse accel)
+            else if (isKeyDownLeft && _currentVelocity.x >= 0)
+            {
+                _faceRight = false;
+                SimAddForce(new Vector3(-PhysicsParams.OnGroundMoveHorizontalForceReverse, 0, 0) * EntityMass);
+            }
+            else if (isKeyDownRight && _currentVelocity.x <= 0)
+            {
+                _faceRight = true;
+                SimAddForce(new Vector3(PhysicsParams.OnGroundMoveHorizontalForceReverse, 0) * EntityMass);
+            }
+            //not steering -> brake due to friction.
+            else if (isKeyDownLeft != true && isKeyDownRight != true && _currentVelocity.x > 0)
+            {
+                SimAddForce(new Vector3(-PhysicsParams.GroundFriction, 0, 0) * EntityMass);
+            }
+            else if (isKeyDownLeft != true && isKeyDownRight != true && _currentVelocity.x < 0)
+            {
+                SimAddForce(new Vector3(PhysicsParams.GroundFriction, 0, 0) * EntityMass);
             }
 
-            //-----------------
-            //ON GROUND SIDEWAYS:
-            if (IsInAir == false)
+            //in case the velocity is close to 0 and no keys are pressed we should make the the player stop.
+            //to do this let's first undo the prior friction force, and then set the velocity to 0.
+            if (isKeyDownLeft != true && isKeyDownRight != true && _currentVelocity.x > 0 &&
+                _currentVelocity.x < PhysicsParams.GroundFrictionEpsilon)
             {
-                //steering into moving direction (slow accel)
-                if (isKeyDownLeft && _currentVelocity.x <= 0)
-                {
-                    _faceRight = false;
-                    SimAddForce(new Vector3(-PhysicsParams.OnGroundMoveHorizontalForce, 0, 0) * EntityMass);
-                }
-                else if (isKeyDownRight && _currentVelocity.x >= 0)
-                {
-                    _faceRight = true;
-                    SimAddForce(new Vector3(PhysicsParams.OnGroundMoveHorizontalForce, 0) * EntityMass);
-                }
-                //steering against moving direction (fast reverse accel)
-                else if (isKeyDownLeft && _currentVelocity.x >= 0)
-                {
-                    _faceRight = false;
-                    SimAddForce(new Vector3(-PhysicsParams.OnGroundMoveHorizontalForceReverse, 0, 0) * EntityMass);
-                }
-                else if (isKeyDownRight && _currentVelocity.x <= 0)
-                {
-                    _faceRight = true;
-                    SimAddForce(new Vector3(PhysicsParams.OnGroundMoveHorizontalForceReverse, 0) * EntityMass);
-                }
-                //not steering -> brake due to friction.
-                else if (isKeyDownLeft != true && isKeyDownRight != true && _currentVelocity.x > 0)
-                {
-                    SimAddForce(new Vector3(-PhysicsParams.GroundFriction, 0, 0) * EntityMass);
-                }
-                else if (isKeyDownLeft != true && isKeyDownRight != true && _currentVelocity.x < 0)
-                {
-                    SimAddForce(new Vector3(PhysicsParams.GroundFriction, 0, 0) * EntityMass);
-                }
+                SimAddForce(new Vector3(PhysicsParams.GroundFriction, 0, 0) * EntityMass);
+                _currentVelocity.x = 0;
+            }
+            else if (isKeyDownLeft != true && isKeyDownRight != true && _currentVelocity.x < 0 &&
+                     _currentVelocity.x > -PhysicsParams.GroundFrictionEpsilon)
+            {
+                SimAddForce(new Vector3(-PhysicsParams.GroundFriction, 0, 0) * EntityMass);
+                _currentVelocity.x = 0;
+            }
+        }
 
-                //in case the velocity is close to 0 and no keys are pressed we should make the the player stop.
-                //to do this let's first undo the prior friction force, and then set the velocity to 0.
-                if (isKeyDownLeft != true && isKeyDownRight != true && _currentVelocity.x > 0 &&
-                    _currentVelocity.x < PhysicsParams.GroundFrictionEpsilon)
+        private void MoveInAir(bool isKeyDownLeft, bool isKeyDownRight)
+        {
+//steering into moving direction (slow accel)
+            if (isKeyDownLeft && _currentVelocity.x <= 0)
+            {
+                _faceRight = false;
+                SimAddForce(new Vector3(-PhysicsParams.InAirMoveHorizontalForce, 0, 0) * EntityMass);
+            }
+            else if (isKeyDownRight && _currentVelocity.x >= 0)
+            {
+                _faceRight = true;
+                SimAddForce(new Vector3(PhysicsParams.InAirMoveHorizontalForce, 0, 0) * EntityMass);
+            }
+            //steering against moving direction (fast reverse accel)
+            else if (isKeyDownLeft && _currentVelocity.x >= 0)
+            {
+                _faceRight = false;
+                SimAddForce(new Vector3(-PhysicsParams.InAirMoveHorizontalForceReverse, 0, 0) * EntityMass);
+            }
+            else if (isKeyDownRight && _currentVelocity.x <= 0)
+            {
+                _faceRight = true;
+                SimAddForce(new Vector3(PhysicsParams.InAirMoveHorizontalForceReverse, 0, 0) * EntityMass);
+            }
+        }
+
+        private void MoveOnWall(bool isKeyDownJump)
+        {
+            if (isKeyDownJump == false) _keyJumpRetrigger = true;
+            if (_currentVelocity.y < 0) SimAddForce(new Vector3(0, PhysicsParams.WallFriction, 0) * EntityMass);
+            if (_currentVelocity.y < PhysicsParams.WallFrictionStrongVelThreshold)
+                SimAddForce(new Vector3(0, PhysicsParams.WallFrictionStrong, 0) * EntityMass);
+            if (isKeyDownJump && _keyJumpRetrigger)
+            {
+                _keyJumpPressed = true;
+                _keyJumpRetrigger = false;
+
+                //in case we are moving down -> let's set the velocity directly
+                //in case we are moving up -> sum up velocity
+                if (IsOnWallLeft)
                 {
-                    SimAddForce(new Vector3(PhysicsParams.GroundFriction, 0, 0) * EntityMass);
-                    _currentVelocity.x = 0;
+                    if (_currentVelocity.y <= 0)
+                        _currentVelocity = new Vector3(PhysicsParams.JumpWallVelHorizontal,
+                            PhysicsParams.JumpWallVelVertical, 0);
+                    else
+                        _currentVelocity = new Vector3(PhysicsParams.JumpWallVelHorizontal,
+                            _currentVelocity.y + PhysicsParams.JumpWallVelVertical, 0);
                 }
-                else if (isKeyDownLeft != true && isKeyDownRight != true && _currentVelocity.x < 0 &&
-                         _currentVelocity.x > -PhysicsParams.GroundFrictionEpsilon)
+                else if (IsOnWallRight)
                 {
-                    SimAddForce(new Vector3(-PhysicsParams.GroundFriction, 0, 0) * EntityMass);
-                    _currentVelocity.x = 0;
+                    if (_currentVelocity.y <= 0)
+                        _currentVelocity = new Vector3(-PhysicsParams.JumpWallVelHorizontal,
+                            PhysicsParams.JumpWallVelVertical, 0);
+                    else
+                        _currentVelocity = new Vector3(-PhysicsParams.JumpWallVelHorizontal,
+                            _currentVelocity.y + PhysicsParams.JumpWallVelVertical, 0);
                 }
             }
+        }
 
-            //-----------------
-            //PLAYER ATTACK
-            if (isKeyDownAttack)
-            {
-                if (!_shot)
-                {
-                    if (_faceRight)
-                    {
-                        _signalCaster.CastRight(30, true, 0);
-                        print("Right");
-                    }
-                    else if (!_faceRight)
-                    {
-                        _signalCaster.CastLeft(30, true, 0);
-                        print("Left");
-                    }
+        private void JumpOnGround(bool isKeyDownJump)
+        {
+//in case the player is on ground and does not press the jump key, he
+            //should be allowed to jump
+            if (isKeyDownJump == false) _keyJumpRetrigger = true;
 
-                    _shot = true;
-                }
-            }
-            else
+            //did player press down the jump button?
+            if (isKeyDownJump && _keyJumpRetrigger)
             {
-                _shot = false;
+                _keyJumpPressed = true;
+                _keyJumpRetrigger = false;
+
+                //when pressing jump on ground we set the upwards velocity directly
+                _currentVelocity = new Vector3(_currentVelocity.x, PhysicsParams.JumpUpVel, 0);
             }
         }
 

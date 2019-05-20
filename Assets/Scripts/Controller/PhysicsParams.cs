@@ -33,6 +33,12 @@ namespace PlayerController {
 
         public float ProjectileForce = 1000;
         public float ExplosionForce = 10;
+
+        public float EnergyRechargeRate = 0.2f;
+        public float EnergyRechargeShotDelay = 1f;
+        public float FullDischargeDelay = 2f;
+
+
         #region serialization version
         [HideInInspector]
         public int Version = 1;

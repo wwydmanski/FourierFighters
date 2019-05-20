@@ -14,7 +14,7 @@ class BasicProjectile : Projectile
 
     private float _energyCoeff = 1f;
 
-    protected void Start()
+    protected new void Start()
     {
         base.Start();
         CollisionPriority = 0;
