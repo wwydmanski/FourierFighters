@@ -21,7 +21,6 @@ namespace Assets.Scripts.Controller
             Texture2D wave = new Texture2D(100, 100);
             wave.SetPixels(0, 0, 100, 100, new[] {Color.red});
             wave.Apply();
-            
         }
     }
 }
