@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 6080945155057182790}
   - component: {fileID: 3236433535955880245}
   - component: {fileID: 512701183830914112}
+  - component: {fileID: 8904102982031761789}
   m_Layer: 0
   m_Name: SignalCaster
   m_TagString: Player
@@ -182,3 +183,15 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6199302104986134352}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &8904102982031761789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6199302104986134352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2367605ac4938b04f9903f84f53a64cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
