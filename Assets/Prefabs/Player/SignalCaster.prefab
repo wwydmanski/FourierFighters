@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 6199302104986134353}
   - component: {fileID: 6199302104986134318}
   - component: {fileID: 6199302104986134319}
-  - component: {fileID: 6080945155057182790}
   - component: {fileID: 3236433535955880245}
   - component: {fileID: 512701183830914112}
   - component: {fileID: 8904102982031761789}
@@ -121,6 +120,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d4d2a3a469dea843a4769af37baa14f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enabledController: 1
+  deathTag: Death
   PlayerNumber: 0
   AntennaIcon: {fileID: 0}
   <PhysicsParams>k__BackingField:
@@ -148,20 +149,6 @@ MonoBehaviour:
     EnergyRechargeShotDelay: 1
     FullDischargeDelay: 2
     Version: 1
---- !u!114 &6080945155057182790
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6199302104986134352}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1873c8360743dc94da6ebc7c4852e084, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  deathTag: Death
-  sceneName: Menu
 --- !u!135 &3236433535955880245
 SphereCollider:
   m_ObjectHideFlags: 0

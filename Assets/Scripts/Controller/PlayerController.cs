@@ -19,7 +19,10 @@ namespace PlayerController
         private bool _keyJumpRetrigger;
 
         private bool _shot;
-
+        public bool enabledController = false;
+        public string deathTag;
+        private bool _playerState =  true;
+        
         private SignalCaster _signalCaster;
 
         private float _timeRealLastGroundCollision;
@@ -38,6 +41,25 @@ namespace PlayerController
 
         public Vector3 VelocityRelativeGround => Velocity / PhysicsParams.OnGroundMaxVelHorizontal;
 
+        public bool IsState()
+        {
+            return _playerState;
+        }
+
+        public void SetState(bool state)
+        {
+            _playerState = state;
+        }
+
+        public void FreezeAllPosition(bool freeze)
+        {
+            if(freeze)
+                Rb.constraints = RigidbodyConstraints.FreezeAll;
+            else
+                Rb.constraints = RigidbodyConstraints.FreezePositionZ;
+        }
+        
+        
         public bool IsOnGround => GetIsColliding(_timeRealLastGroundCollision);
 
         public bool IsOnWallLeft => GetIsColliding(_timeRealLastWallLeftCollision);
@@ -94,9 +116,12 @@ namespace PlayerController
             //let's reset forces to 0 and then add regular gravitation
             SimResetForce();
             SimAddForce(new Vector3(0, PhysicsParams.GameGravity2, 0) * EntityMass);
-
+            
             //process key input (like jumping key pressed, etc...)
-            ProcessInput();
+            if (enabledController)
+            {
+                ProcessInput();
+            }
 
             //simulate position and velocity based on all acting forces
             ComputeVelocity(Time.deltaTime);
@@ -397,6 +422,15 @@ namespace PlayerController
         public void ResetPlayer()
         {
             _currentVelocity = Vector2.zero;
+        }
+        
+        private void OnTriggerEnter(Collider collider)
+        {
+            if (collider.CompareTag(deathTag))
+            {
+                _playerState = false;
+                enabledController = false;
+            }
         }
 
     }

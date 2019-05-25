@@ -1348,13 +1348,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerPrefab: {fileID: 6199302104986134352, guid: a6357139cf8f3c141b7b167418fd50f9,
     type: 3}
+  sceneName: Menu
   Players:
   - playerNumber: 0
     instance: {fileID: 0}
     spawnPoint: {fileID: 1152645628}
+    wins: 0
   - playerNumber: 0
     instance: {fileID: 0}
     spawnPoint: {fileID: 1858460513}
+    wins: 0
+  numRoundsToWin: 3
 --- !u!4 &1288385329
 Transform:
   m_ObjectHideFlags: 0
