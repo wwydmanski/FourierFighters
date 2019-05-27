@@ -90,7 +90,7 @@ namespace Manager
 
         private IEnumerator RoundEnding()
         {
-            DisabledPlayerControl();
+            //DisabledPlayerControl();
 
             _roundWinner = GetRoundWinner();
 
