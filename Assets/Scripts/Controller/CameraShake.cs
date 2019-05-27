@@ -46,14 +46,13 @@ namespace Assets.Scripts.Controller
         {
             if (shakeDuration > 0)
             {
-                camTransform.localPosition = originalPos + Random.insideUnitSphere * shakeAmount*shakeDuration;
+                camTransform.localPosition += Random.insideUnitSphere * shakeAmount*shakeDuration;
 
                 shakeDuration -= Time.deltaTime * decreaseFactor;
             }
             else
             {
                 shakeDuration = 0f;
-                camTransform.localPosition = originalPos;
             }
         }
     }
