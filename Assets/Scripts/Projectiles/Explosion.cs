@@ -32,7 +32,6 @@ namespace Assets.Scripts.Projectiles
         public void Explode(float realRadius, float energy)
         {
             //DrawRadius(realRadius);
-
             Collider[] colliders = Physics.OverlapSphere(_transform.position, realRadius);
             ApplyForce(colliders, _transform.position, realRadius, energy);
         }

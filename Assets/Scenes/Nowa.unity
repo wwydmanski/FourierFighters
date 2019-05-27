@@ -849,6 +849,7 @@ MonoBehaviour:
   PlayerPrefab: {fileID: 6199302104986134352, guid: a6357139cf8f3c141b7b167418fd50f9,
     type: 3}
   sceneName: Menu
+  CameraTransform: {fileID: 0}
   Players:
   - playerNumber: 0
     instance: {fileID: 0}
@@ -1894,6 +1895,7 @@ GameObject:
   - component: {fileID: 1104079993}
   - component: {fileID: 1104079996}
   - component: {fileID: 1104079997}
+  - component: {fileID: 1104079998}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1997,6 +1999,22 @@ MonoBehaviour:
   YMaxBound: 11
   XMaxBound: 20
   XMinBound: -20
+--- !u!114 &1104079998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1104079992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eebcf91b7232f3d4a8b4bc51985c2872, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  camTransform: {fileID: 0}
+  shakeDuration: 0
+  shakeAmount: 0.2
+  decreaseFactor: 1
 --- !u!1 &1109572520
 GameObject:
   m_ObjectHideFlags: 0

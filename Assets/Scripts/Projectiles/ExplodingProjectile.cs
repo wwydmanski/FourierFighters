@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Controller;
+using UnityEngine;
 
 namespace Assets.Scripts.Projectiles
 {
@@ -74,6 +75,8 @@ namespace Assets.Scripts.Projectiles
 
                 if (explode)
                 {
+                    GameObject.Find("Main Camera").GetComponent<CameraShake>().Start(0.5f);
+
                     Color expColor = Color.Lerp(_explosionColor ?? Color, Color.white, 0.5f);
                     explosion.DrawParticles(ExplosionEffect, Equation.GetEnergy() * _particlePower, expColor);
                     explosion.Explode(realRadius, Equation.GetEnergy() * _particlePower);

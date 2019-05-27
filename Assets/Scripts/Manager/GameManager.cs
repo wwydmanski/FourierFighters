@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Assets.Scripts;
+using Assets.Scripts.Controller;
 using Assets.Scripts.Manager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,6 +11,8 @@ namespace Manager
     {
         public GameObject PlayerPrefab;
         public string sceneName;
+        public Transform CameraTransform;
+
         public PlayerManager[] Players;
         private PlayerManager _roundWinner;
         private PlayerManager _gameWinner;
@@ -40,6 +43,7 @@ namespace Manager
                 Players[i].Setup();
                 Players[i].instance.name = $"Player {i + 1}";
                 Players[i].instance.GetComponent<PlayerController.PlayerController>().AntennaIcon = GameObject.Find($"Antenna{i+1}");
+
 
                 StartCoroutine(SetPlayerColor(Players[i].instance, _playerColors[i]));
             }
