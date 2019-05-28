@@ -71,7 +71,7 @@ namespace Assets.Scripts.Projectiles
             {
                 var realRadius = RadiusBase * Equation.GetEnergy() / 40;
 
-                var explosion = new Explosion(gameObject.AddComponent<LineRenderer>(), transform);
+                var explosion = new Explosion(transform);
 
                 if (explode)
                 {

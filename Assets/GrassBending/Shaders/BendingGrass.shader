@@ -44,11 +44,11 @@ Shader "Hidden/TerrainEngine/Details/BillboardWavingDoublePass"
             float3 benderWorldPos = _BendData[i].xyz;
             float3 vertexWorldPos = mul(unity_ObjectToWorld, v.vertex);
 
-            float distToBender = distance(float3(vertexWorldPos.x, 0, vertexWorldPos.z), float3(benderWorldPos.x, 0, benderWorldPos.z));
+            float distToBender = distance(float3(vertexWorldPos.x, 0, vertexWorldPos.x), float3(benderWorldPos.x, 0, benderWorldPos.x));
             float bendPower = (bendRadius - min(bendRadius, distToBender)) / (bendRadius + 0.001);
-            float3 bendDir = normalize(vertexWorldPos - benderWorldPos);
-            float2 vertexOffset = bendDir.xz * bendPower * v.texcoord.y * v.tangent.y;
-            v.vertex.xz += lerp(float2(0, 0), vertexOffset, saturate(bendRadius * v.color.w));
+            float2 bendDir = normalize(vertexWorldPos.xy - benderWorldPos.xy);
+            float vertexOffset = bendDir * bendPower * v.texcoord.y * v.tangent.y;
+            v.vertex.x += lerp(float(0), vertexOffset, saturate(bendRadius * v.color.w));
         }
 
         // Billboarding.
