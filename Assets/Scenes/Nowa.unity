@@ -839,7 +839,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eeefa04e4e840646859eda7aafa42ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerPrefab: {fileID: 6199302104986134352, guid: a6357139cf8f3c141b7b167418fd50f9,
+  PlayerPrefab: {fileID: 680496158813014523, guid: fe14153ab23d46e428555a10954ee4bc,
     type: 3}
   sceneName: Menu
   CameraTransform: {fileID: 0}
