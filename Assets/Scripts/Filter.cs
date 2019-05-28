@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts.Projectiles;
-using TMPro;
 using UnityEngine;
 
 public class Filter : MonoBehaviour
@@ -14,7 +13,6 @@ public class Filter : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GetComponentInChildren<TextMeshPro>().text = $"{BandStart}-{BandStart + _bandWidth} Hz";
     }
 
     // Update is called once per frame
