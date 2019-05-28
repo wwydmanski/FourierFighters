@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 3236433535955880245}
   - component: {fileID: 512701183830914112}
   - component: {fileID: 8904102982031761789}
-  - component: {fileID: 5154580115445416500}
+  - component: {fileID: 6772926125346057198}
   m_Layer: 0
   m_Name: SignalCaster
   m_TagString: Player
@@ -183,17 +183,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2367605ac4938b04f9903f84f53a64cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!182 &5154580115445416500
-WindZone:
+--- !u!114 &6772926125346057198
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6199302104986134352}
   m_Enabled: 1
-  m_Mode: 1
-  m_Radius: 0.6
-  m_WindMain: 1
-  m_WindTurbulence: 0
-  m_WindPulseMagnitude: 0
-  m_WindPulseFrequency: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b2b297f543d4b047a8a18dd35c6c321, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bendRadius: 1.01
+  priority: 1

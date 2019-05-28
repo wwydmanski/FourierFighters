@@ -131,6 +131,7 @@ namespace PlayerController
             IsInAir = IsOnGround == false;
 
             GetComponent<AntennaIconManager>().UpdateIcon(_energyLeft);
+            transform.rotation = Quaternion.identity;
         }
 
         private IEnumerator IncreaseEnergy()
