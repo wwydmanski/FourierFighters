@@ -408,7 +408,7 @@ GameObject:
   - component: {fileID: 270783047}
   - component: {fileID: 270783046}
   m_Layer: 5
-  m_Name: Antenna2
+  m_Name: Antenna1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -900,7 +900,7 @@ GameObject:
   - component: {fileID: 816876219}
   - component: {fileID: 816876218}
   m_Layer: 5
-  m_Name: Antenna1
+  m_Name: Antenna2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1001,7 +1001,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -1051,13 +1051,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 828894699}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: 0.42729563, y: -0.35762554, z: 0.023152536, w: 0.830052}
   m_LocalPosition: {x: -10.2, y: 27.9, z: -9.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 46.545002, y: -56.557003, z: -22.86}
 --- !u!1 &871131689
 GameObject:
   m_ObjectHideFlags: 0
@@ -1927,8 +1927,8 @@ MonoBehaviour:
   LevelManager: {fileID: 1288385327}
   MDampTime: 0.2
   MScreenEdgeBuffer: 4
-  MMinSize: 6.5
-  MMaxSize: 15
+  MMinSize: 4
+  MMaxSize: 10
   YMinBound: 5.4
   YMaxBound: 8.8
   XMaxBound: 20
