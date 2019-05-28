@@ -1924,13 +1924,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e503ab863d5c8848bc3f06a33e8ba37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LevelManager: {fileID: 0}
+  LevelManager: {fileID: 1288385327}
   MDampTime: 0.2
   MScreenEdgeBuffer: 4
   MMinSize: 6.5
   MMaxSize: 15
-  YMinBound: 0
-  YMaxBound: 11
+  YMinBound: 5.4
+  YMaxBound: 8.8
   XMaxBound: 20
   XMinBound: -20
 --- !u!45 &1813802258
