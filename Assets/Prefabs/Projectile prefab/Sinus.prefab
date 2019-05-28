@@ -93,7 +93,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.2
+  m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &5020358227008876335
 MonoBehaviour:
@@ -4799,6 +4799,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8582592888726166671}
   - component: {fileID: 2217666545094113588}
+  - component: {fileID: 1902941763035146764}
   m_Layer: 0
   m_Name: Trail
   m_TagString: Untagged
@@ -4913,5 +4914,17 @@ TrailRenderer:
     shadowBias: 0.5
     generateLightingData: 1
   m_MinVertexDistance: 0.1
-  m_Autodestruct: 0
+  m_Autodestruct: 1
   m_Emitting: 1
+--- !u!114 &1902941763035146764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7169641283023452620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5be96e08c309f5b45b09044aea4b36bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

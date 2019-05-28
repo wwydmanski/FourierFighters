@@ -5,7 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Scenes/Menu.unity
+    guid: e103323f3c4b9b247ab3d124993c5fc1
+  - enabled: 1
+    path: Assets/Scenes/Nowa.unity
+    guid: f34a1ee077f6367479bb119b4d7dc1bf
+  - enabled: 1
+    path: Assets/Scenes/Kosmos.unity
+    guid: 8b636dad9c796674298f5785c2eaacbb
   m_configObjects: {}
