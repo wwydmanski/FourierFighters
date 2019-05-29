@@ -384,7 +384,7 @@ namespace PlayerController
         {
             foreach (var contactPoint in collision.contacts)
             {
-                if (GetIsVectorClose(new Vector3(0, 1, 0), contactPoint.normal, 0.05f))
+                if (GetIsVectorClose(new Vector3(0, 1, 0), contactPoint.normal, 0.5f))
                 {
                     _timeRealLastGroundCollision = Time.realtimeSinceStartup;
                     _currentVelocity.y = Mathf.Clamp(_currentVelocity.y, 0, Mathf.Abs(_currentVelocity.y));
