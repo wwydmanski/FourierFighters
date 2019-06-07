@@ -14,6 +14,7 @@ namespace PlayerController
     {
         private Vector3 _currentVelocity = Vector3.zero;
         private bool _faceRight = true;
+        private bool _lastFaceRight = true;
 
         private bool _keyJumpPressed;
         private bool _keyJumpRetrigger;
@@ -219,6 +220,23 @@ namespace PlayerController
             //PLAYER ATTACK
             if (isKeyDownAttack) Attack();
             else _shot = false;
+
+            if (_faceRight && !_lastFaceRight)
+            {
+                var gun = transform.Find("Gun");
+                gun.Rotate(Vector3.up, 180);
+                Debug.Log("Turned right");
+                Debug.Log(gun.rotation);
+                _lastFaceRight = true;
+            }
+            else if(!_faceRight && _lastFaceRight)
+            {
+                var gun = transform.Find("Gun");
+                gun.Rotate(Vector3.up, 180);
+                Debug.Log("Turned left");
+                Debug.Log(gun.rotation);
+                _lastFaceRight = false;
+            }
         }
 
         private void HandleJumping(bool isKeyDownJump)
