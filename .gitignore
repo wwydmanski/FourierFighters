@@ -1,3 +1,4 @@
+.gitignore
 # This .gitignore file should be placed at the root of your Unity project directory
 /[Ll]ibrary/
 /[Tt]emp/
@@ -50,8 +51,7 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
-Nowy\ Folder/
-
+WindowsBuild/
 
 # Crashlytics generated file
 crashlytics-build.properties

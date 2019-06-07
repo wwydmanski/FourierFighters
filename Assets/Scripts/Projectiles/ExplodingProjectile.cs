@@ -71,11 +71,14 @@ namespace Assets.Scripts.Projectiles
             {
                 var realRadius = RadiusBase * Equation.GetEnergy() / 40;
 
-                var explosion = new Explosion(gameObject.AddComponent<LineRenderer>(), transform);
+                var explosion = new Explosion(transform);
 
                 if (explode)
                 {
-                    GameObject.Find("Main Camera").GetComponent<CameraShake>().Start(0.5f);
+                    if(Equation.GetEnergy()>1)
+                        GameObject.Find("Main Camera").GetComponent<CameraShake>().Start(0.5f);
+                    else
+                        GameObject.Find("Main Camera").GetComponent<CameraShake>().Start(0.2f);
 
                     Color expColor = Color.Lerp(_explosionColor ?? Color, Color.white, 0.5f);
                     explosion.DrawParticles(ExplosionEffect, Equation.GetEnergy() * _particlePower, expColor);

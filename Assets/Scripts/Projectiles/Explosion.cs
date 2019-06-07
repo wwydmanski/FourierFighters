@@ -9,12 +9,10 @@ namespace Assets.Scripts.Projectiles
 {
     public class Explosion
     {
-        private readonly LineRenderer _lineDrawer;
         private readonly Transform _transform;
 
-        public Explosion(LineRenderer renderer, Transform transform)
+        public Explosion(Transform transform)
         {
-            _lineDrawer = renderer;
             _transform = transform;
         }
 
@@ -34,28 +32,6 @@ namespace Assets.Scripts.Projectiles
             //DrawRadius(realRadius);
             Collider[] colliders = Physics.OverlapSphere(_transform.position, realRadius);
             ApplyForce(colliders, _transform.position, realRadius, energy);
-        }
-
-        private void DrawRadius(float radius)
-        {
-            float theta = 0f;
-            float thetaScale = 0.01f;
-
-            int size = (int)((1f / thetaScale) + 1f);
-            _lineDrawer.widthMultiplier = 0.1f;
-
-            _lineDrawer.positionCount = size;
-            for (int i = 0; i < size; i++)
-            {
-                theta += (2.0f * Mathf.PI * thetaScale);
-                float x = radius * Mathf.Cos(theta);
-                float y = radius * Mathf.Sin(theta);
-
-                Vector3 obstruction =
-                    ObstructionHelper.GetLinecastCollision(_transform.position, new Vector3(_transform.position.x + x, _transform.position.y + y, 0));
-
-                _lineDrawer.SetPosition(i, obstruction);
-            }
         }
 
         private void ApplyForce(Collider[] colliders, Vector3 explosionPos, float realRadius, float energy)

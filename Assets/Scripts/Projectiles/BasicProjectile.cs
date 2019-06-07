@@ -43,7 +43,8 @@ class BasicProjectile : Projectile
                 collision.rigidbody?.AddForce(Direction * this.Equation.GetEnergy() * _energyCoeff,
                 ForceMode.Impulse);
 
-            Explode(colliderProjectile);
+            if (colliderProjectile != null)
+                Explode(colliderProjectile);
 
             Die();
         }
@@ -51,7 +52,7 @@ class BasicProjectile : Projectile
 
     private void Explode(Projectile colliderProjectile)
     {
-        var explosion = new Explosion(gameObject.AddComponent<LineRenderer>(), transform);
+        var explosion = new Explosion(transform);
         if (colliderProjectile != null)
             explosion.DrawParticles(ExplosionEffect, Equation.GetEnergy(),
                 Color.Lerp(Color, colliderProjectile.Color, 0.5f));
