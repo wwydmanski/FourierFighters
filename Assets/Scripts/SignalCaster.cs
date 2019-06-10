@@ -21,7 +21,6 @@ namespace Assets.Scripts
         private float _y_offset = 0.3f;
         public Color CasterColor;
 
-
         // ReSharper disable once UnusedMember.Local
         private void Start()
         {
@@ -34,6 +33,7 @@ namespace Assets.Scripts
             _offsetMult = GetComponent<Collider>().bounds.size.magnitude;
 
             SetColor(UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f));
+
         }
 
         public void SetColor(Color color)
@@ -87,6 +87,8 @@ namespace Assets.Scripts
 
         private IEnumerator Cast(float freq, float waitTime, Vector3 direction, bool exploding)
         {
+            GetComponent<AudioSource>().Play();
+
             yield return new WaitForSecondsRealtime(waitTime);
 
             var offset = direction*_offsetMult;
